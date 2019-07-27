@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="oggi è un grande giorno perché ho finalmente (e nuovamente) le notifiche desktop di weechat, grazie a urxvt. Prerequisiti: *urxvt sulla macchina guest *libnorify sulla amchcina guest *weechat...">
+        <meta name="keywords" content="bash, tmux, weechat">
+        <link rel="icon" href="https://www.j0llyb0x.org/favicon.ico">
+
+        <title>remote weechat notification via urxvt & tmux - j0llyb0x</title>
+
+        <!-- Stylesheets -->
+        <link href="https://www.j0llyb0x.org/theme/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://www.j0llyb0x.org/theme/css/fonts.css" rel="stylesheet">
+        <link href="https://www.j0llyb0x.org/theme/css/nest.css" rel="stylesheet">
+        <link href="https://www.j0llyb0x.org/theme/css/pygment.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <link href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Full Atom Feed" />
+        <link href="https://www.j0llyb0x.org/feeds/{slug}.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Categories Atom Feed" />
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <!-- Google Analytics -->
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-18259053-2', 'auto');
+          ga('send', 'pageview');
+        </script>
+        <!-- /Google Analytics -->
+
+
+    </head>
+
+    <body>
+
+        <!-- Header -->
+    <div class="header-container gradient">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="https://www.j0llyb0x.org/"><img class="mr20" src="https://www.j0llyb0x.org/images/logo.png" alt="logo"></a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="https://www.j0llyb0x.org/">Homepage</a>
+                                <a href="https://www.j0llyb0x.org/categories.html">Categories</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">remote weechat notification via urxvt & tmux</h1>
+                      <p class="header-date">By <a href="https://www.j0llyb0x.org/author/j0lly.html">j0lly</a>, Wed 20 August 2014, in category <a href="https://www.j0llyb0x.org/category/sysadmin.html">Sysadmin</a></p>
+                      <div class="header-underline"></div>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="https://www.j0llyb0x.org/tag/bash.html">bash</a>, <a href="https://www.j0llyb0x.org/tag/tmux.html">tmux</a>, <a href="https://www.j0llyb0x.org/tag/weechat.html">weechat</a>                      </p>
+                  </div>
+              </div>
+        </div>
+    </div>
+    <!-- /Header -->
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    <div class="container content">
+        <p>oggi è un grande giorno perché ho finalmente (e nuovamente) le notifiche desktop di weechat, grazie a urxvt.</p>
+<p><img alt="weechat" src="https://www.j0llyb0x.org/images/weechat-1.png"></p>
+<p>Prerequisiti:</p>
+<p>*urxvt sulla macchina guest</p>
+<p>*libnorify sulla amchcina guest</p>
+<p>*weechat sulla macchina server </p>
+<p>Questo metodo è abbastanza hacker, ma su internet ho visto cose veramente più brutte e questa è la più elegante che ho trovato, per ci più mi ha fatto scoprire cose di urxvt che non sapevo e che mi fa capire come mai molti lo utilizzano così massivamente.</p>
+<p>per prima cose è necessario aggiungere la gestione delle notifiche urgenti dei programmi via shell aggiungendo la line nel file .Xresources (o .Xdefaults):</p>
+<div class="highlight"><pre><span></span><span class="n">urxvt</span><span class="p">.</span><span class="n">urgentOnBell</span><span class="p">:</span> <span class="k">True</span>
+
+<span class="n">xrdb</span> <span class="p">.</span><span class="n">Xresources</span>
+</pre></div>
+
+
+<p>ed ora aprendo una nuova shell, basta lanciare un comando di prova tipo sleep 5 e spostarsi in un altro workspace (o comunque mettendo fuori fuoco la finestra) e dovrebbe illuminarsi all'uscita del comando.</p>
+<p>ora che abbiamo i nostri luccichii, passiamo alla gestione delle notifiche vere e proprie e, se si vuole, anche il segnale acustico..</p>
+<p>create questo script mettendolo in una directory che preferite (io in .urxvt/notifier):</p>
+<p>[gist url="https://gist.github.com/j0lly/f99df5b9676faf2e231b"]</p>
+<p>ora modificate ancora il vostro .Xresources in modo da utilizzare il nuovo plugin:</p>
+<div class="highlight"><pre><span></span><span class="o">!</span> <span class="k">beep</span> <span class="nv">via</span> <span class="nv">urxvt</span> <span class="nv">signals</span> <span class="o">&amp;</span><span class="nv">amp</span><span class="c1">; perl extension</span>
+<span class="nv">URxvt</span>.<span class="nv">perl</span><span class="o">-</span><span class="nv">lib</span>: <span class="o">/</span><span class="nv">home</span><span class="o">/</span><span class="nv">j0lly</span><span class="o">/</span>.<span class="nv">urxvt</span><span class="o">/</span>
+<span class="nv">URxvt</span>.<span class="nv">perl</span><span class="o">-</span><span class="nv">ext</span>: <span class="nv">notifier</span>
+</pre></div>
+
+
+<p>reload delle funzioni coma sopra e tutto dovrebbe funzionare (controllate di avere aplay e notify-send installati e funzionanti, e scegliete un suono che vi aggrada); non resta che provare:</p>
+<div class="highlight"><pre><span></span><span class="n">echo</span> <span class="o">-</span><span class="n">ne</span> <span class="ss">&quot;\033]777;notify;titolo;Ciao Mondo\007\007&quot;</span>
+</pre></div>
+
+
+<p>Ho notato che ci sono alcune mancanze, come la possibilità di avere un subject della notifica separato da spazi, ed altre limitazioni, mo ci sarà tempo di affinare.
+Ora, spostandoci sul server che ospita la sessione di weechat dentro il multiplexer (tmux o screen), ed aggiungiamo questo script 
+[gist url="https://gist.github.com/j0lly/8803d4067bb00c05ab23"]</p>
+<p>in ~/.weechat/python/osc_notify.py</p>
+<p>ed un link per l'autostart:</p>
+<div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="p">.</span><span class="n">weechat</span><span class="o">/</span><span class="n">pyhton</span><span class="o">/</span><span class="n">autoload</span> <span class="p">;</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="p">..</span><span class="o">/</span><span class="n">osc_notify</span><span class="p">.</span><span class="n">py</span> <span class="n">osc_notify</span><span class="p">.</span><span class="n">py</span>
+</pre></div>
+
+
+<p>e su weechat:</p>
+<div class="highlight"><pre><span></span><span class="o">/</span><span class="n">script</span> <span class="k">load</span> <span class="n">osc_notify</span><span class="p">.</span><span class="n">py</span>
+</pre></div>
+
+
+<p>perfetto, da ora ogni notifica via weechat verrà instradata come messaggio osc e gestito da urxvt.</p>
+<p>Una nota:</p>
+<p>Lo script per weechat utilizza una stringa di notifica diversa da quella nello script sul guest; questo perché è necessario un escape del multiplexer, producendo una stringa del tipo:</p>
+<div class="highlight"><pre><span></span><span class="err">\</span><span class="mi">033</span><span class="n">Ptmux</span><span class="p">;</span><span class="err">\</span><span class="mi">033</span><span class="err">\</span><span class="mi">033</span><span class="p">]</span><span class="mi">777</span><span class="p">;</span><span class="k">notify</span><span class="p">;</span><span class="n">titolo</span><span class="p">;</span><span class="n">messaggio</span> <span class="n">di</span> <span class="n">testo</span><span class="err">\</span><span class="mi">007</span><span class="err">\</span><span class="mi">007</span><span class="err">\</span><span class="mi">033</span><span class="err">\\\</span>
+</pre></div>
+
+
+<p>per la sessione screen, i caratteri di escape dovrebbero essere:</p>
+<div class="highlight"><pre><span></span><span class="err">\</span><span class="mi">033</span><span class="n">P</span><span class="err">\</span><span class="mi">033</span><span class="p">]</span><span class="mi">777</span><span class="p">;</span><span class="k">notify</span><span class="p">;</span><span class="n">titolo</span><span class="p">;</span><span class="n">messaggio</span> <span class="n">di</span> <span class="n">testo</span><span class="err">\</span><span class="mi">007</span><span class="err">\</span><span class="mi">007</span><span class="err">\</span><span class="mi">033</span><span class="err">\\\</span>
+</pre></div>
+
+
+<p>ma non ne sono sicuro non avendo provato.</p>
+<p>Spero sia servito.</p>
+<p>Stay TuNeD</p>
+<p>Fonti:</p>
+<blockquote>
+<p><a href="https://snippet.phyks.me/index.php?tag=Weechat">phyks</a></p>
+<p><a href="http://artisan.karma-lab.net/ajouter-notification-a-urxvt">karma-lab</a></p>
+<p><a href="http://mlomnicki.com/ruby/linux/2011/02/09/irc-notifications.html">mlomnicki</a></p>
+<p><a href="https://bbs.archlinux.org/viewtopic.php?pid=1364337">archlinux</a></p>
+<p><a href="http://comments.gmane.org/gmane.comp.terminal-emulators.tmux.user/1322ù">gmane</a></p>
+</blockquote>
+
+    <h4>Qualcosa di simile</h4>
+    <ul>
+        <p>Sat 23 August 2014 <a href="https://www.j0llyb0x.org/2014/find-open-proxy.html">find open proxy</a></p>
+        <p>Thu 29 March 2012 <a href="https://www.j0llyb0x.org/2012/fast-connection-sharing.html">Fast connection sharing</a></p>
+    </ul>
+
+    <div class="comments">
+        <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'j0llyshares';
+                var disqus_identifier = '2014/remote-weechat-notification-via-urxvt-tmux.html';
+                var disqus_url = 'https://www.j0llyb0x.org/2014/remote-weechat-notification-via-urxvt-tmux.html';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+        <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+        
+    </div>
+        <!-- /Content --> 
+
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="https://www.j0llyb0x.org/archives.html">Archives</a></li>
+                            <li><a href="https://www.j0llyb0x.org/tags.html">Tags</a></li>
+                            <li><a href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Social</div>
+                        <ul class="list-unstyled">
+                            <li><a href="http://github.com/j0lly" target="_blank">Github</a></li>
+                            <li><a href="https://it.linkedin.com/pub/josè-ferraris/4a/a32/384" target="_blank">Linkedin</a></li>
+                            <li><a href="#" target="_blank">Instagram</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Links</div>
+                        <ul class="list-unstyled">
+                            <li><a href="https://packetstormsecurity.com/" target="_blank">Packestorm</a></li>
+                            <li><a href="https://www.archlinux.org/" target="_blank">Archlinux</a></li>
+                        </ul>
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; j0llyb0x.org 2011-2015</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
+</html>

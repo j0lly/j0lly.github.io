@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Per inaugurare il ritorno ad Archlinux, ho deciso di scrivere un articolo sulla mia attuale installazione! Ho deciso di scrivere questa guida per chiunque voglia cimentarsi con il nuovissimo...">
+        <meta name="keywords" content="archlinux, bcache, internals, kernel">
+        <link rel="icon" href="https://www.j0llyb0x.org/favicon.ico">
+
+        <title>[GUIDA] Bcache, luks e btrfs: Archlinux on steroids [parte I] - j0llyb0x</title>
+
+        <!-- Stylesheets -->
+        <link href="https://www.j0llyb0x.org/theme/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://www.j0llyb0x.org/theme/css/fonts.css" rel="stylesheet">
+        <link href="https://www.j0llyb0x.org/theme/css/nest.css" rel="stylesheet">
+        <link href="https://www.j0llyb0x.org/theme/css/pygment.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <link href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Full Atom Feed" />
+        <link href="https://www.j0llyb0x.org/feeds/{slug}.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Categories Atom Feed" />
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <!-- Google Analytics -->
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-18259053-2', 'auto');
+          ga('send', 'pageview');
+        </script>
+        <!-- /Google Analytics -->
+
+
+    </head>
+
+    <body>
+
+        <!-- Header -->
+    <div class="header-container gradient">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="https://www.j0llyb0x.org/"><img class="mr20" src="https://www.j0llyb0x.org/images/logo.png" alt="logo"></a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="https://www.j0llyb0x.org/">Homepage</a>
+                                <a href="https://www.j0llyb0x.org/categories.html">Categories</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">[GUIDA] Bcache, luks e btrfs: Archlinux on steroids [parte I]</h1>
+                      <p class="header-date">By <a href="https://www.j0llyb0x.org/author/j0lly.html">j0lly</a>, Fri 14 June 2013, in category <a href="https://www.j0llyb0x.org/category/sysadmin.html">Sysadmin</a></p>
+                      <div class="header-underline"></div>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="https://www.j0llyb0x.org/tag/archlinux.html">archlinux</a>, <a href="https://www.j0llyb0x.org/tag/bcache.html">bcache</a>, <a href="https://www.j0llyb0x.org/tag/internals.html">internals</a>, <a href="https://www.j0llyb0x.org/tag/kernel.html">kernel</a>                      </p>
+                  </div>
+              </div>
+        </div>
+    </div>
+    <!-- /Header -->
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    <div class="container content">
+        <p>Per inaugurare il ritorno ad Archlinux, ho deciso di scrivere un articolo sulla mia attuale installazione! Ho deciso di scrivere questa guida per chiunque voglia cimentarsi con il nuovissimo modulo Kernel (che sarà ufficialmente supportato solo dalla versione 3.10) bcache, che introduce il caching dinamico di un hard disk col supporto di una SSD.</p>
+<p><img alt="bcache" src="https://www.j0llyb0x.org/images/bcache-1.jpg"></p>
+<p>Il modulo in questione è pensato per chi ha una piccola SSD (magari saldata sulla motherboard come me) da sfruttare al meglio. Fino a poco tempo fa installavo la <em>Root</em> direttamente su SSD, per lasciare la <em>Home</em> sull'HDD. È vero che spesso nella <em>Home</em> esistono files come iso, musica, video, immagini e vari file binari che non giovano delle scritture random delle SSD, ma il caching può comunque servire a velocizzare tutti i files di configurazione all'interno della <em>Home</em> del nostro utente. Visto che ero in ballo con una bella installazione complessa, ho deciso di fare le cose per bene, aggiungendo una <em>full encryption</em> del disco e un <em>filesystem</em> che, posso dirlo, sembra davvero una scelta azzeccatissima: btrfs! Ho utilizzato un paio di guide poco complesse da seguire, ma non credo esista qualcosa in italiano per cui ho deciso di raccogliere tutto in una guida.</p>
+<p>PARTE I</p>
+<ul>
+<li>installazione Arch minimale su ssd</li>
+<li>base install con archiso</li>
+<li>compilazione del kernel e patch per l'inclusione del modulo bcache</li>
+<li>instalazione dei pacchetti "<a href="https://aur.archlinux.org/packages/linux-bcache-git/">linux-bcache-git</a>" e "<a href="https://aur.archlinux.org/packages/bcache-tools-git/">bcache-tools-git</a>"</li>
+<li>preparazione dell'hdd</li>
+<li>creazione del volume bcache di backend</li>
+<li>encryption della partizione</li>
+</ul>
+<p>PARTE II</p>
+<ul>
+<li>clone dell'installazione Arch da ssd a hdd</li>
+<li>creazione del fs BTRFS</li>
+<li>sync dell'installazione precedente</li>
+<li>
+<p>modifica dei files fstab ed affini</p>
+</li>
+<li>
+<p>Termine installazione</p>
+</li>
+<li>chroot e modifica del bootloader</li>
+<li>inclusione dell'hook in mkinitcpio.conf</li>
+<li>eliminare Arch sull'ssd</li>
+<li>creare il device di cache</li>
+</ul>
+<p>PARTE III</p>
+<ul>
+<li>Bonus:</li>
+<li>CryptoSwap + hibernation</li>
+<li>UsbKeyFile per l'autenticazione</li>
+</ul>
+<p>E qui le guide:</p>
+<p><a href="https://wiki.archlinux.org/index.php/Installing_on_Btrfs_root">https://wiki.archlinux.org/index.php/Installing_on_Btrfs_root</a> 
+<a href="https://wiki.archlinux.org/index.php/Bcache">https://wiki.archlinux.org/index.php/Bcache</a> 
+<a href="https://wiki.archlinux.org/index.php/Dm-crypt_with_LUKS">https://wiki.archlinux.org/index.php/Dm-crypt_with_LUKS</a> 
+<a href="http://forums.gentoo.org/viewtopic-t-959542.html">http://forums.gentoo.org/viewtopic-t-959542.html</a></p>
+<p>Prima di tutto.. la mia attuale configurazione:</p>
+<div class="highlight"><pre><span></span><span class="err">┌──</span><span class="o">[</span><span class="n">j0lly@TheH0le</span><span class="o">]</span><span class="err">──</span><span class="o">[</span><span class="n">~</span><span class="o">]</span><span class="w"></span>
+<span class="err">└──</span><span class="w"> </span><span class="n">uname</span><span class="w"> </span><span class="o">-</span><span class="n">mnr</span><span class="w"> </span>
+<span class="n">TheH0le</span><span class="w"> </span><span class="mf">3.9.0</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">ARCH</span><span class="o">-</span><span class="mi">01423</span><span class="o">-</span><span class="n">gbfd2858</span><span class="o">-</span><span class="n">dirty</span><span class="w"> </span><span class="n">x86_64</span><span class="w"></span>
+</pre></div>
+
+
+<p>HDD 500Gb + SSD 24Gb</p>
+<div class="highlight"><pre><span></span><span class="err">┌──</span><span class="p">[</span><span class="n">j0lly</span><span class="p">@</span><span class="n">TheH0le</span><span class="p">]</span><span class="err">──</span><span class="p">[</span><span class="o">~</span><span class="p">]</span>
+<span class="err">└──</span> <span class="n">lsblk</span>
+
+<span class="n">NAME</span> <span class="nl">MAJ</span><span class="p">:</span><span class="n">MIN</span> <span class="n">RM</span> <span class="n">SIZE</span> <span class="n">RO</span> <span class="n">TYPE</span> <span class="n">MOUNTPOINT</span>
+
+<span class="n">sda</span> <span class="mi">8</span><span class="o">:</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">465</span><span class="p">,</span><span class="mi">8</span><span class="n">G</span> <span class="mi">0</span> <span class="n">disk</span>
+<span class="err">├─</span><span class="n">sda1</span> <span class="mi">8</span><span class="o">:</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">2</span><span class="n">M</span> <span class="mi">0</span> <span class="n">part</span>                            <span class="p">[</span><span class="n">GRUB</span> <span class="n">RESERVED</span><span class="p">]</span>
+<span class="err">├─</span><span class="n">sda2</span> <span class="mi">8</span><span class="o">:</span><span class="mi">2</span> <span class="mi">0</span> <span class="mi">509</span><span class="n">M</span> <span class="mi">0</span> <span class="n">part</span>                          <span class="p">[</span><span class="n">UEFI</span> <span class="n">RESERVED</span><span class="p">]</span>
+<span class="err">├─</span><span class="n">sda3</span> <span class="mi">8</span><span class="o">:</span><span class="mi">3</span> <span class="mi">0</span> <span class="mi">500</span><span class="n">M</span> <span class="mi">0</span> <span class="n">part</span> <span class="o">/</span><span class="n">boot</span>
+<span class="err">├─</span><span class="n">sda4</span> <span class="mi">8</span><span class="o">:</span><span class="mi">4</span> <span class="mi">0</span> <span class="mi">1</span><span class="n">G</span> <span class="mi">0</span> <span class="n">part</span>                            <span class="p">[</span><span class="n">RECOVER</span> <span class="n">PARTITION</span><span class="p">]</span>
+<span class="err">├─</span><span class="n">sda5</span> <span class="mi">8</span><span class="o">:</span><span class="mi">5</span> <span class="mi">0</span> <span class="mi">455</span><span class="p">,</span><span class="mi">8</span><span class="n">G</span> <span class="mi">0</span> <span class="n">part</span>
+<span class="err">└─</span><span class="n">bcache0</span> <span class="mi">254</span><span class="o">:</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">455</span><span class="p">,</span><span class="mi">8</span><span class="n">G</span> <span class="mi">0</span> <span class="n">disk</span>
+    <span class="err">└─</span><span class="n">btrfs1</span> <span class="mi">253</span><span class="o">:</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">455</span><span class="p">,</span><span class="mi">8</span><span class="n">G</span> <span class="mi">0</span> <span class="n">crypt</span> <span class="o">/</span>
+<span class="n">sdb</span> <span class="mi">8</span><span class="o">:</span><span class="mi">16</span> <span class="mi">0</span> <span class="mi">22</span><span class="p">,</span><span class="mi">4</span><span class="n">G</span> <span class="mi">0</span> <span class="n">disk</span>
+<span class="err">├─</span><span class="n">sdb1</span> <span class="mi">8</span><span class="o">:</span><span class="mi">17</span> <span class="mi">0</span> <span class="mi">8</span><span class="n">G</span> <span class="mi">0</span> <span class="n">part</span>
+    <span class="err">└─</span><span class="n">cryptswap</span> <span class="mi">253</span><span class="o">:</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">8</span><span class="n">G</span> <span class="mi">0</span> <span class="n">crypt</span> <span class="p">[</span><span class="n">SWAP</span><span class="p">]</span>
+<span class="err">└─</span><span class="n">sdb2</span> <span class="mi">8</span><span class="o">:</span><span class="mi">18</span> <span class="mi">0</span> <span class="mi">14</span><span class="p">,</span><span class="mi">4</span><span class="n">G</span> <span class="mi">0</span> <span class="n">part</span>
+    <span class="err">└─</span><span class="n">bcache0</span> <span class="mi">254</span><span class="o">:</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">455</span><span class="p">,</span><span class="mi">8</span><span class="n">G</span> <span class="mi">0</span> <span class="n">disk</span>
+        <span class="err">└─</span><span class="n">btrfs1</span> <span class="mi">253</span><span class="o">:</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">455</span><span class="p">,</span><span class="mi">8</span><span class="n">G</span> <span class="mi">0</span> <span class="n">crypt</span> <span class="o">/</span>
+</pre></div>
+
+
+<p>Per cominciare ho preparato il disco seguendo i consigli della guida Arch su <a href="http://evilpiepirate.org/git/linux-bcache.git/tree/Documentation/bcache.txt?h=bcache-dev">bcache</a>: fare un'installazione base sull'SSD, per poi allineare il tutto sull'HDD; la procedura sembrerebbe macchinosa ma, dato che per <em>bootare</em> un disco preparato per il <em>caching</em> con bcache è necessario un modulo kernel che non è attualmente supportato nella versione mainstream del kernel, è necessario compilarlo da un ambiente Linux preesistente e, dato che per Arch abbiamo un comodo pacchetto su AUR che applica le patch desiderate, la scelta si può fare ad occhi chiusi ;).</p>
+<p>Se siete in grado di produrre una iso con un kernel patchato (che velocizzerebbe l'installazione e manterrebbe un sistema "recovery" su chiavetta) siete sicuramente avvantaggiati e, dato che ho smadonnato per due giorni cercando di mettere il kernel nella maledetta iso arch, non sarò io a spiegarvi come (dato che ho fallito miseramente). Prima di tutto installiamo Arch dalla Iso (procedure ben documentata nel <a href="https://wiki.archlinux.org/index.php/Beginners'_Guide_(Italiano)">wiki</a>). Non perdete tempo in fronzoli per l'installazione su SSD dato che servirà da ponte per la vera installazione; l'unico accorgimento che posso dare è quello di creare una partizione di boot da riciclare per l'altra installazione (io l'ho messa su HDD). Dopo aver terminato e restartato il nuovo sistema da SSD, potete procedere scaricando i pacchetti AUR per compilarli:</p>
+<div class="highlight"><pre><span></span><span class="err">┌──</span><span class="o">[</span><span class="n">j0lly@TheH0le</span><span class="o">]</span><span class="err">──</span><span class="o">[</span><span class="n">~</span><span class="o">]</span><span class="w"></span>
+<span class="err">└──</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="n">sources</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="n">sources</span><span class="w"></span>
+
+<span class="err">┌──</span><span class="o">[</span><span class="n">j0lly@TheH0le</span><span class="o">]</span><span class="err">──</span><span class="o">[</span><span class="n">~/sources</span><span class="o">]</span><span class="w"></span>
+<span class="err">└──</span><span class="w"> </span><span class="n">wget</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">aur</span><span class="p">.</span><span class="n">archlinux</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">li</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">bcache</span><span class="o">-</span><span class="n">git</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">bcache</span><span class="o">-</span><span class="n">git</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span><span class="w"> </span><span class="o">-</span><span class="n">O</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tar</span><span class="w"> </span><span class="n">xzvf</span><span class="w"> </span><span class="o">-</span><span class="w"></span>
+
+<span class="err">┌──</span><span class="o">[</span><span class="n">j0lly@TheH0le</span><span class="o">]</span><span class="err">──</span><span class="o">[</span><span class="n">~/sources</span><span class="o">]</span><span class="w"></span>
+<span class="err">└──</span><span class="w"> </span><span class="n">wget</span><span class="w"> </span><span class="nl">https</span><span class="p">:</span><span class="o">//</span><span class="n">aur</span><span class="p">.</span><span class="n">archlinux</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">bc</span><span class="o">/</span><span class="n">bcache</span><span class="o">-</span><span class="n">tools</span><span class="o">-</span><span class="n">git</span><span class="o">/</span><span class="n">bcache</span><span class="o">-</span><span class="n">tools</span><span class="o">-</span><span class="n">git</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span><span class="w"> </span><span class="o">-</span><span class="n">O</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tar</span><span class="w"> </span><span class="n">xzvf</span><span class="w"> </span><span class="o">-</span><span class="w"></span>
+</pre></div>
+
+
+<p>Controllate le dipendenze dei pacchetti (ce n'è qualcuna), e quando siete pronti lanciate makepkg -s. dopo un'estenuante attesa avrete il vostro bel kernel _patchato; _installatelo, aggiornate il conf di grub (grub-mkconfig) e fate un reboot con il kernel nuovo di zecca...</p>
+<p>Il mio schema di partizionamento è stato dettato da alcuni importanti fattori, con accorgimenti da tenere in considerazione:</p>
+<ul>
+<li>MBR è anni luce indietro rispetto a GPT e non vedo ragione di usare una tecnologia obsoleta.</li>
+<li>Dato che il mio Bios è buggato, non posso utilizzare UEFI, ripiegando sul booting old style installando il bootloader nell'MBR: se utilizzate come me l'accoppiata GPT-BIOS, ricordatevi di creare una piccola partizione all'inizio del disco da lasciare a Grub, con gdisk (gptdisk) di almeno un paio di Mb. </li>
+<li>Altra importantissima considerazione è che Grub (e nessun bootloader che io conosca) non è in grado di leggere direttamente da dischi criptati col modulo dm-crypt ne tanto meno attraverso bcache. Quindi, preparatevi una partizione di boot per contenere il vostro kernel e ramdisk che verranno letti da Grub all'avvio.</li>
+<li>Quarto accorgimento e potenzialmente più importante di tutti: fatevi una partizione di  1Gb o due per un sistema di <em>recovery!</em> (se siete in grado e preferite, usate una iso patchata); fidatevi, parlo per esperienza personale: se utilizzate tre <em>layer</em> di astrazione di cui due a livello sperimentale, è il caso che abbiate un sistema di <em>recovery</em> a portata di mano, se no col cavolo che accedete ai vostri dati.</li>
+<li>Quinto ed ultimo accorgimento: se state pensando all'ibernazione, tenete a mente che btrfs non se la fila bene con partizioni e file di <em>swap</em>; gioco forza, dovrete creare un'altra partizione fuori dal volume btrfs; potete mantenere una partizione separata sul disco oppure, come ho fatto io, prendendo dello spazio dall'ssd.</li>
+</ul>
+<p>Dopo aver deciso il layout_ create le partizioni sull'HDD con gdisk. Per generare il <em>container</em> (la partizione che tiene i dati, in contrapposizione con quella che fa da cache) detto _backing device, _utilizzate il tool make-bcache:</p>
+<div class="highlight"><pre><span></span><span class="err">┌──</span><span class="o">[</span><span class="n">j0lly@TheH0le</span><span class="o">]</span><span class="err">──</span><span class="o">[</span><span class="n">~</span><span class="o">]</span><span class="w"></span>
+<span class="err">└──</span><span class="w"> </span><span class="n">make</span><span class="o">-</span><span class="n">bcache</span><span class="w"> </span><span class="c1">--bdev --block 512 /dev/sd*</span>
+</pre></div>
+
+
+<p>Con questa sintassi bcache-tool formatta una partizione (o un disk raw) per il formato bcache, aggiungendo i suo metadata ed headers. Ho specificato 512 come block size perché la mia ssd dava problemi con il default block size, ma è il caso che leggiate la <a href="http://bcache.evilpiepirate.org/Design/">documentazione</a> e le possibili implicazioni. Alla creazione, il device viene automaticamente registrato e nella directory <em>/dev</em> avrete un nuovo <em>Block Device</em> chiamato /dev/bcache*. La registrazione dei <em>devices</em> bcache va fatta ad ogni boot, questo anche per facilitare l'aggiunta o la cancellazione di <em>caching devices</em> (ssd); non preoccupatevi però, perché nel pacchetto bcache-tools è compreso un <em>hook</em> per il kernel da dare in pasto a mkinitcpio che registrerà automaticamente tutti i vostri device bcache al boot. Il parametro da appendere in /etc/mkinitcpio.conf è, manco a dirlo, bcache:</p>
+<div class="highlight"><pre><span></span><span class="p">[...]</span> <span class="n">block</span> <span class="n">bcache</span> 
+<span class="p">[...]</span> <span class="n">filesystems</span> 
+<span class="p">[...]</span>
+</pre></div>
+
+
+<p>Bcache va posizionato dopo l'<em>Hook</em> dei <em>block devices</em>, ma prima dei <em>filesystems</em>.</p>
+<p>Il dispositivo bcache è pronto ed è giunto il momento di utilizzare cryptsetup per cifrare la partizione, dove creerete più avanti il filesystem con btrfs. Per creare un volume crittografato, dovete utilizzare la <em>suite</em> cryptsetup. Le ozioni sono molte e dell'alto della mia ignoranza ho preferito mantenere lo standard della guida Arch su Luks (nei riferimenti):</p>
+<div class="highlight"><pre><span></span>┌──[<span class="nv">j0lly</span>@<span class="nv">TheH0le</span>]──[<span class="o">~</span>]
+└── <span class="nv">cryptsetup</span> <span class="o">--</span><span class="nv">cipher</span> <span class="nv">aes</span><span class="o">-</span><span class="nv">xts</span><span class="o">-</span><span class="nv">plain64</span> <span class="o">--</span><span class="nv">key</span><span class="o">-</span><span class="nv">size</span> <span class="mi">512</span> <span class="o">--</span><span class="nv">hash</span> <span class="nv">sha512</span> <span class="o">--</span><span class="nv">iter</span><span class="o">-</span><span class="nv">time</span> <span class="mi">5000</span> <span class="o">--</span><span class="nv">use</span><span class="o">-</span><span class="k">random</span> <span class="o">--</span><span class="nv">verify</span><span class="o">-</span><span class="nv">passphrase</span> <span class="nv">luksFormat</span> <span class="o">/</span><span class="nv">dev</span><span class="o">/</span><span class="nv">bacache0</span>
+</pre></div>
+
+
+<p>Salvatevi la password in un antro oscuro e non disperate: è sempre bene avere una <em>password "incazzata"</em> per il <em>recovery;</em> tanto meglio anzi, dato che Luks permette di avere fino ad 8 "chiavi" per apre i contenitori cifrati; è perfino possibile utilizzare immagini e binari e, mettendoli su una chiavetta per essere letti in automatico all'avvio, potrete scordarvi della password in tranquillità (sempre che le abbiate salvate in un luogo sicuro ;)).</p>
+<p>Ok, ora che abbiamo il nostro container cifrato, lo possiamo aprire:</p>
+<div class="highlight"><pre><span></span><span class="err">┌──</span><span class="o">[</span><span class="n">j0lly@TheH0le</span><span class="o">]</span><span class="err">──</span><span class="o">[</span><span class="n">~</span><span class="o">]</span><span class="w"></span>
+<span class="err">└──</span><span class="w"> </span><span class="n">cryptsetup</span><span class="w"> </span><span class="n">luksOpen</span><span class="w"> </span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">bcache0</span><span class="w"> </span><span class="n">btrfs</span><span class="w"></span>
+</pre></div>
+
+
+<p>Dove _btrfs _sta significare il nome del device mapper che verrà creato all'apertura del volume (/dev/mapper/btrfs).
+La prima parte della guida termina qui, ma la seconda è già quasi pronta ;)
+Per chi volesse cominciare subito, ricordatevi di segnare la password per il volume crittografato, oltre a tutti i nomi simbolici che avete dato nella vostra configurazione.</p>
+<p>A presto!</p>
+
+
+    <div class="comments">
+        <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'j0llyshares';
+                var disqus_identifier = '2013/guida-bcache-luks-e-btrfs-archlinux-on-steroids-parte-i.html';
+                var disqus_url = 'https://www.j0llyb0x.org/2013/guida-bcache-luks-e-btrfs-archlinux-on-steroids-parte-i.html';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+        <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+        
+    </div>
+        <!-- /Content --> 
+
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="https://www.j0llyb0x.org/archives.html">Archives</a></li>
+                            <li><a href="https://www.j0llyb0x.org/tags.html">Tags</a></li>
+                            <li><a href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Social</div>
+                        <ul class="list-unstyled">
+                            <li><a href="http://github.com/j0lly" target="_blank">Github</a></li>
+                            <li><a href="https://it.linkedin.com/pub/josè-ferraris/4a/a32/384" target="_blank">Linkedin</a></li>
+                            <li><a href="#" target="_blank">Instagram</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Links</div>
+                        <ul class="list-unstyled">
+                            <li><a href="https://packetstormsecurity.com/" target="_blank">Packestorm</a></li>
+                            <li><a href="https://www.archlinux.org/" target="_blank">Archlinux</a></li>
+                        </ul>
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; j0llyb0x.org 2011-2015</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
+</html>

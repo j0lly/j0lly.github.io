@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Se non sapete cos&#39;è un DNS o un tunnel, leggetevi l&#39;articolo introduttivo sul DNS tunneling. Prima di tutto presentiamo Iodine: This is a piece of software that lets you tunnel IPv4 data through a...">
+        <meta name="keywords" content="dns, hacking, iodine">
+        <link rel="icon" href="https://www.j0llyb0x.org/favicon.ico">
+
+        <title>[GUIDA] DNS Tunnel with Iodine PARTE II - j0llyb0x</title>
+
+        <!-- Stylesheets -->
+        <link href="https://www.j0llyb0x.org/theme/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://www.j0llyb0x.org/theme/css/fonts.css" rel="stylesheet">
+        <link href="https://www.j0llyb0x.org/theme/css/nest.css" rel="stylesheet">
+        <link href="https://www.j0llyb0x.org/theme/css/pygment.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <link href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Full Atom Feed" />
+        <link href="https://www.j0llyb0x.org/feeds/{slug}.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Categories Atom Feed" />
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <!-- Google Analytics -->
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-18259053-2', 'auto');
+          ga('send', 'pageview');
+        </script>
+        <!-- /Google Analytics -->
+
+
+    </head>
+
+    <body>
+
+        <!-- Header -->
+    <div class="header-container gradient">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="https://www.j0llyb0x.org/"><img class="mr20" src="https://www.j0llyb0x.org/images/logo.png" alt="logo"></a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="https://www.j0llyb0x.org/">Homepage</a>
+                                <a href="https://www.j0llyb0x.org/categories.html">Categories</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">[GUIDA] DNS Tunnel with Iodine PARTE II</h1>
+                      <p class="header-date">By <a href="https://www.j0llyb0x.org/author/j0lly.html">j0lly</a>, Sun 15 January 2012, in category <a href="https://www.j0llyb0x.org/category/hacking.html">Hacking</a></p>
+                      <div class="header-underline"></div>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="https://www.j0llyb0x.org/tag/dns.html">dns</a>, <a href="https://www.j0llyb0x.org/tag/hacking.html">hacking</a>, <a href="https://www.j0llyb0x.org/tag/iodine.html">iodine</a>                      </p>
+                  </div>
+              </div>
+        </div>
+    </div>
+    <!-- /Header -->
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    <div class="container content">
+        <p>Se non sapete cos'è un DNS o un tunnel, leggetevi <a href="http://j0llyb0x.org/intro-dns-tunnel-con-iodine-01-2012/">l'articolo</a> introduttivo sul DNS tunneling.</p>
+<p>Prima di tutto presentiamo Iodine:</p>
+<blockquote>
+<div class="highlight"><pre><span></span><span class="n">This</span> <span class="k">is</span> <span class="n">a</span> <span class="n">piece</span> <span class="k">of</span> <span class="n">software</span> <span class="n">that</span> <span class="n">lets</span> <span class="n">you</span> <span class="n">tunnel</span> <span class="n">IPv4</span> <span class="k">data</span> <span class="n">through</span> <span class="n">a</span> <span class="n">DNS</span>
+<span class="n">server</span><span class="p">.</span> <span class="n">This</span> <span class="n">can</span> <span class="n">be</span> <span class="n">usable</span> <span class="k">in</span> <span class="n">different</span> <span class="n">situations</span> <span class="k">where</span> <span class="n">internet</span> <span class="k">access</span> <span class="k">is</span>
+<span class="n">firewalled</span><span class="p">,</span> <span class="n">but</span> <span class="n">DNS</span> <span class="n">queries</span> <span class="k">are</span> <span class="n">allowed</span><span class="p">.</span>
+</pre></div>
+
+
+</blockquote>
+<p>Andate nella <a href="http://code.kryo.se/iodine/">homepage</a> e scaricate l'ultima versione, disponibile per praticamente tutti i sistemi operativi!</p>
+<p>Se siete su OSX avete un paio di opzioni; o vi installate una macchina virtuale con <a href="https://www.virtualbox.org/">virtualbox</a>, magari <a href="http://www.backtrack-linux.org/">Back|Track</a> così iodine ve lo trovate già dentro, o vi scaricate Xcode dall'apple store e procedete con un semplice "sudo <em>make &amp; make install</em>", oppure vi installate <a href="https://github.com/mxcl/homebrew">homebrew</a> e lo utilizzate da lì. Queste sono le opzioni che ritengo più comode per avere questo programma in OSX.</p>
+<p>Tenete conto che il programma è formato da due parti, il client e il server; ovviamente dovete avere un computer con un Iodine server in attesa di una connessione, come ne ho parlato nel post precedente.</p>
+<p>I comandi per lanciare il server (Iodined) sono:</p>
+<div class="highlight"><pre><span></span><span class="n">iodined</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span> <span class="n">x</span><span class="p">.</span><span class="n">miodominio</span><span class="p">.</span><span class="n">com</span>
+</pre></div>
+
+
+<p>L'ip è la maschera che darete alla vostra rete virtuale (o tunnel), mentre il dominio è quello fittizio al quale il server è stato delegato (x.yourdomain.org).</p>
+<p>P.S. è necessario possedere i permessi di amministratore per gestire iodine;</p>
+<p>P.P.S Sul server (linux) dovrete anche settare l'ip forwarding se volete usare un tunnel ssh direttamente dalla stessa macchina dove gira Iodined; da root digitate:</p>
+<div class="highlight"><pre><span></span><span class="n">echo</span> <span class="ss">&quot;1&quot;</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">proc</span><span class="o">/</span><span class="n">net</span><span class="o">/</span><span class="n">ipv4</span><span class="o">/</span><span class="n">ip_forward</span>
+</pre></div>
+
+
+<p>Ora non vi resta che lanciare il client dalla macchina dalla quale volete instaurare il tunnel <em>et voilà</em>, tunnel servito!</p>
+<div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">iodine</span> <span class="n">ipserveriodined</span>  <span class="n">a</span><span class="p">.</span><span class="n">miodominio</span><span class="p">.</span><span class="n">com</span>
+</pre></div>
+
+
+<p>Ora, tutto questo procedimento risulterebbe inutile se la rete fosse patchata, quindi è sempre buona norma darsi conto di che tipo di rete abbiamo di fronte. Le possibilità sono pressappoco tre:</p>
+<ol>
+<li>
+<p>il gateway permette query DNS di ogni tipo e senza restrizioni: non è nemmeno necessario avere un dominio perché è sufficiente dare un nome fittizio da ricercare (es.<em> iodined 10.0.0.1 pinco.pallino</em> e ovviamente lo stesso per il client);</p>
+</li>
+<li>
+<p>il gateway permette query DNS solamente ad alcuni server o solo al server DNS interno: in questo caso bisogna utilizzare il metodo esposto prima, con la particolarità che se il server DNS utilizzabile è solo quello del gateway (99% delle volte è il classico 192.168.1.1) bisognerà impostare quello come indirizzo per il tunnel (es. iodine 192.168.1.1 a.mydomain.com);</p>
+</li>
+<li>
+<p>La terza opzione è che il muro sia solido e ben costruito, e quindi vi attaccate e pagate il provider 5 € per mezz'ora di internet!</p>
+</li>
+</ol>
+<p>Per capire il livello di sicurezza bastano un paio di <em>nslookup</em> o <em>dig</em> come spiegato <a href="http://dev.kryo.se/iodine/wiki/HowtoSetup">qua</a>!</p>
+<p>Questo è all'incirca quanto si deve sapere per avere un tunnel sempre pronto a portata di mano. Alcuni accorgimenti da seguire potrebbero essere:</p>
+<ul>
+<li>
+<p>utilizzare la funzione password implementata in Iodine, anche se è una protezione piuttosto blanda;</p>
+</li>
+<li>
+<p>limitare le connessioni al server Iodined;</p>
+</li>
+<li>
+<p>l'accorgimento più importante è comunque utilizzare una connessione ssh per criptare il flusso di dati che, per questo protocollo, resterebbero se no sempre in chiaro!</p>
+</li>
+</ul>
+<p>Quindi, per concludere le operazioni, il comando ssh per instaurare un "tunnel nel tunnel" è:</p>
+<div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="o">-</span><span class="n">fN</span> <span class="o">-</span><span class="n">CD</span> <span class="n">xxxx</span> <span class="n">username</span><span class="mf">@10.0.0.1</span>
+</pre></div>
+
+
+<p>I comandi stanno a significare che ssh deve andare in background (-f) anche senza comandi (-N) e deve instaurare una connessione compressa (-C) e fare un bind (-D) sulla porta locale xxxx (scegliete una porta non standard, magari alta come una 64000 o giù di lì).</p>
+<p>Ecco fatto, ora settate per bene il proxy sul vostro browser con la porta da voi scelta ed avrete una navigazione criptata e free, provare per credere!</p>
+<p>allego schermata:</p>
+<p><img alt="settings" src="https://www.j0llyb0x.org/images/iodine2-1.jpg"></p>
+<p>o con firerefox</p>
+<p><img alt="settings" src="https://www.j0llyb0x.org/images/iodine2-2.jpg"></p>
+<p>per chrome la questione è un poco più complicata: dalle impostazioni proxy, venite reindirizzati alle preferenze generali di connessione del vostro sistema operativo e se cambiate il proxy questo vale per qualsiasi connessione e non solo per il browser; per questo, con chrome, vi consiglio un'estensione semplice semplice che vi permette di gestire il proxy solo per la navigazione: <a href="https://chrome.google.com/webstore/detail/caehdcpeofiiigpdhbabniblemipncjj">proxy switchy</a> vi permette di aggiungere il vostro bel socks proxy.</p>
+<p><img alt="switchy" src="https://www.j0llyb0x.org/images/iodine2-3.png"></p>
+<p>Molto bene, ore siete pronti per navigare in tranquillità!</p>
+<p>fonti:</p>
+<blockquote>
+<p><a href="http://bottiger.org/wrote/29-Tunneling-traffic-through-DNS-using-Iodine-for-fun-and-profit">bottiger.org</a></p>
+<p><a href="http://otacon22.wordpress.com/2011/02/05/dns-tunneling/">octacon22</a></p>
+<p><a href="http://sadevil.org/blog/2008/07/07/iodine-dns-tunnel-on-your-mac-to-escape-those-evil-firewalls/">sadevil</a></p>
+<p><a href="http://dev.kryo.se/iodine/wiki/HowtoSetup">kryo.se</a></p>
+</blockquote>
+
+    <h4>Qualcosa di simile</h4>
+    <ul>
+        <p>Thu 19 June 2014 <a href="https://www.j0llyb0x.org/2014/parte-ii-dns-questo-sconosciuto-configurazione-di-un-master-autoritativo-puro.html">[parte II] DNS, questo sconosciuto.. Configurazione di un Master autoritativo puro</a></p>
+        <p>Tue 17 June 2014 <a href="https://www.j0llyb0x.org/2014/parte-i-dns-questo-sconosciuto.html">[parte I] DNS, questo sconosciuto..</a></p>
+    </ul>
+
+    <div class="comments">
+        <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'j0llyshares';
+                var disqus_identifier = '2012/guida-dns-tunnel-with-iodine-parte-ii.html';
+                var disqus_url = 'https://www.j0llyb0x.org/2012/guida-dns-tunnel-with-iodine-parte-ii.html';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+        <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+        
+    </div>
+        <!-- /Content --> 
+
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="https://www.j0llyb0x.org/archives.html">Archives</a></li>
+                            <li><a href="https://www.j0llyb0x.org/tags.html">Tags</a></li>
+                            <li><a href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Social</div>
+                        <ul class="list-unstyled">
+                            <li><a href="http://github.com/j0lly" target="_blank">Github</a></li>
+                            <li><a href="https://it.linkedin.com/pub/josè-ferraris/4a/a32/384" target="_blank">Linkedin</a></li>
+                            <li><a href="#" target="_blank">Instagram</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Links</div>
+                        <ul class="list-unstyled">
+                            <li><a href="https://packetstormsecurity.com/" target="_blank">Packestorm</a></li>
+                            <li><a href="https://www.archlinux.org/" target="_blank">Archlinux</a></li>
+                        </ul>
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; j0llyb0x.org 2011-2015</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
+</html>

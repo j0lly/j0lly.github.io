@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>j0llyb0x - hacking</title><link href="https://www.j0llyb0x.org/" rel="alternate"></link><link href="https://www.j0llyb0x.org/feeds/hacking.atom.xml" rel="self"></link><id>https://www.j0llyb0x.org/</id><updated>2014-11-23T00:00:00+01:00</updated><subtitle>Hacker Inside</subtitle><entry><title>OpenResolver.py, open DNS crawler</title><link href="https://www.j0llyb0x.org/2014/openresolverpy-open-dns-crawler.html" rel="alternate"></link><published>2014-11-23T00:00:00+01:00</published><updated>2014-11-23T00:00:00+01:00</updated><author><name>j0lly</name></author><id>tag:www.j0llyb0x.org,2014-11-23:/2014/openresolverpy-open-dns-crawler.html</id><summary type="html">&lt;p&gt;Week-end felice: ho trovato voglia e tempo per scrivere un po di (orribile) python!&lt;/p&gt;
+&lt;p&gt;&lt;img alt="odin" src="https://www.j0llyb0x.org/images/odin-1.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;Dato che la tecnica del &lt;a href="http://it.wikipedia.org/wiki/DNS_Amplification_Attack"&gt;DNS Amplification Attack&lt;/a&gt; è didatticamente molto interessante, ho deciso di fare un po di esercizi di scripting e creare un piccolo programma in python che potesse ricercare i famosi Open Resolver …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Week-end felice: ho trovato voglia e tempo per scrivere un po di (orribile) python!&lt;/p&gt;
+&lt;p&gt;&lt;img alt="odin" src="https://www.j0llyb0x.org/images/odin-1.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;Dato che la tecnica del &lt;a href="http://it.wikipedia.org/wiki/DNS_Amplification_Attack"&gt;DNS Amplification Attack&lt;/a&gt; è didatticamente molto interessante, ho deciso di fare un po di esercizi di scripting e creare un piccolo programma in python che potesse ricercare i famosi Open Resolver in giro per la rete.&lt;/p&gt;
+&lt;p&gt;Si chiama Openresolver.py (che classe :P) ed è hostato sul mio github: https://github.com/j0lly/openresolvers.&lt;/p&gt;
+&lt;p&gt;Per ora è solo un'accozzaglia di righe di codice, ma il suo sporco lavoro lo fa:&lt;/p&gt;
+&lt;p&gt;basta passare un ip o un range di ip in formato CIDR e lui comincerà a testare tutti i target per trovare quelli che risolvono query DNS arbitrarie.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="shot" src="https://www.j0llyb0x.org/images/openresolver-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Esempio:&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[root@newsun][~/openresolvers]&lt;/span&gt;
+&lt;span class="na"&gt;16:42:43 # git com./openresolver.py -t 91.98.29.244/24 -c 120 -o resolvers.txt&lt;/span&gt;
+&lt;span class="na"&gt;resolving with 91.98.29.0&lt;/span&gt;
+&lt;span class="na"&gt;resolving with 91.98.29.1&lt;/span&gt;
+&lt;span class="na"&gt;resolving with 91.98.29.2&lt;/span&gt;
+
+&lt;span class="k"&gt;[..]&lt;/span&gt;
+
+&lt;span class="na"&gt;resolving with 91.98.29.118&lt;/span&gt;
+&lt;span class="na"&gt;resolving with 91.98.29.119&lt;/span&gt;
+&lt;span class="na"&gt;fd-fp3.wg1.b.yahoo.com.&lt;/span&gt;
+&lt;span class="na"&gt;adding 91.98.29.26 to the list&lt;/span&gt;
+&lt;span class="na"&gt;fd-fp3.wg1.b.yahoo.com.&lt;/span&gt;
+&lt;span class="na"&gt;adding 91.98.29.22 to the list&lt;/span&gt;
+&lt;span class="na"&gt;fd-fp3.wg1.b.yahoo.com.&lt;/span&gt;
+&lt;span class="na"&gt;adding 91.98.29.86 to the list&lt;/span&gt;
+&lt;span class="na"&gt;fd-fp3.wg1.b.yahoo.com.&lt;/span&gt;
+&lt;span class="na"&gt;adding 91.98.29.66 to the list&lt;/span&gt;
+&lt;span class="na"&gt;fd-fp3.wg1.b.yahoo.com.&lt;/span&gt;
+&lt;span class="na"&gt;adding 91.98.29.68 to the list&lt;/span&gt;
+&lt;span class="na"&gt;fd-fp3.wg1.b.yahoo.com.&lt;/span&gt;
+&lt;span class="na"&gt;adding 91.98.29.69 to the list&lt;/span&gt;
+&lt;span class="na"&gt;fd-fp3.wg1.b.yahoo.com.&lt;/span&gt;
+&lt;span class="na"&gt;adding 91.98.29.67 to the list&lt;/span&gt;
+&lt;span class="na"&gt;fd-fp3.wg1.b.yahoo.com.&lt;/span&gt;
+&lt;span class="na"&gt;adding 91.98.29.10 to the list&lt;/span&gt;
+&lt;span class="na"&gt;fd-fp3.wg1.b.yahoo.com.&lt;/span&gt;
+&lt;span class="na"&gt;adding 91.98.29.70 to the list&lt;/span&gt;
+&lt;span class="na"&gt;resolving with 91.98.29.120&lt;/span&gt;
+
+
+&lt;span class="k"&gt;[..]&lt;/span&gt;
+
+&lt;span class="na"&gt;I found 14 resolvers!&lt;/span&gt;
+&lt;span class="na"&gt;dumped list to resolvers.txt&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al momento è molto verboso e non fornisce molte opzioni, ma cercherò di migliorarne il contenuto se avrò tempo; ovviamente se qualcuno volesse contribuire, sarei felicissimo di accettare qualche commit!&lt;/p&gt;
+&lt;p&gt;Spero che qualcuno trovi lo script interessante, o per lo meno curioso :P&lt;/p&gt;
+&lt;p&gt;Stay tuned!&lt;/p&gt;
+&lt;p&gt;J0lly&lt;/p&gt;</content><category term="odin"></category><category term="python"></category><category term="dns"></category><category term="hacking"></category></entry><entry><title>find open proxy</title><link href="https://www.j0llyb0x.org/2014/find-open-proxy.html" rel="alternate"></link><published>2014-08-23T00:00:00+02:00</published><updated>2014-08-23T00:00:00+02:00</updated><author><name>j0lly</name></author><id>tag:www.j0llyb0x.org,2014-08-23:/2014/find-open-proxy.html</id><summary type="html">&lt;p&gt;Un poco annoiato, ieri ho deciso di annotarmi qualche proxy aperto che potesse servire a vari scopi... :P&lt;/p&gt;
+&lt;p&gt;&lt;img alt="nmap" src="https://www.j0llyb0x.org/images/nmap-1.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;H pensato sarebbe stato un ottimo playground per python e xml (xml.minidom,xml.etree,BeautifulSoup) ma sono rimasto scottato dalle mie risorse; il Vps sul quale sto lavorando è un Lxc …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Un poco annoiato, ieri ho deciso di annotarmi qualche proxy aperto che potesse servire a vari scopi... :P&lt;/p&gt;
+&lt;p&gt;&lt;img alt="nmap" src="https://www.j0llyb0x.org/images/nmap-1.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;H pensato sarebbe stato un ottimo playground per python e xml (xml.minidom,xml.etree,BeautifulSoup) ma sono rimasto scottato dalle mie risorse; il Vps sul quale sto lavorando è un Lxc (Linux container) openvz con 512Mb di ram.&lt;/p&gt;
+&lt;p&gt;Dato che le liste di indirizzi sono /16, il file in formato xml  è grosso più di 20Mb, python si mangiava tutta la memoria all'atto di importare il file.&lt;/p&gt;
+&lt;p&gt;Certo, avrei potuto cominciare studiando la maniera di ottimizzare il codice e prende chunk di dati, ma dato che volevo produrre qualcosa di funzionante prima di lasciare un'altra idea a metà, ho rifatto tutto in 3 linee di bash senza nemmeno utilizzare un decimo della memoria che python utilizza, solo a leggere il file...&lt;/p&gt;
+&lt;p&gt;Con questo non voglio dire nulla, se non che le mie conoscenze di python sono così basse che non mi permettono nemmeno di implementare 3 righe di script senza perdere 3 giorni; pazienza, sarà per la prossima idea (tanto quelle non finiscono mai :P ).&lt;/p&gt;
+&lt;p&gt;Quindi, passando al topic, ho creato un piccolo script che facesse al caso mio.&lt;/p&gt;
+&lt;p&gt;Le dipendenze sono:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;nmap,&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;nc,&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;grep&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;mailx,&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;uuencode.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Nulla di più.&lt;/p&gt;
+&lt;p&gt;Il codice lo trovate nel &lt;a href="https://gist.github.com/j0lly/89c82bb5aac9116c5b7e"&gt;gist&lt;/a&gt; linkato.&lt;/p&gt;
+&lt;p&gt;Lo script è triviale, ma vale la pena annotare qualche switch e comando utilizzato in modo da risparmiare tempo la prossima volta che ci si trova ad affrontare certi problemi.&lt;/p&gt;
+&lt;p&gt;Per prima cosa il comando nmap utilizzato:&lt;/p&gt;
+&lt;p&gt;nmap --script http-open-py.roxnse  -Pn -P0 -n --unprivileged  -T4 $1.0.0/16  -p 8080 -oX ${1}.0.0&lt;/p&gt;
+&lt;p&gt;lo script http-open-proxy.nse è utilizzato per testare la porta 8080 (nel codice ho trovato riferimenti a 4 porte, ma non ho avuto tempo di capire se aggiungendo porte allo switch -p vengono scansionate anch'esse) e cercare di scremare i target possibili.&lt;/p&gt;
+&lt;p&gt;altro switch degno di nota è --unprivileged, dal man page:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--unprivileged&lt;/code&gt; (Assume that the user lacks raw socket privileges)&lt;/p&gt;
+&lt;p&gt;This option is the opposite of &lt;code&gt;--privileged&lt;/code&gt;. It tells Nmap to treat the user as lacking network raw socket and sniffing privileges. This is useful for testing, debugging, or when the raw network functionality of your operating system is somehow broken. The &lt;code&gt;NMAP_UNPRIVILEGED&lt;/code&gt; environment variable may be set as an equivalent alternative to &lt;code&gt;--unprivileged&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Questo flag è stato indispensabile affinché nmap funzionasse a causa di due concorrenti cause:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;la macchian è un Ovz container è probabilmente il network ha qualche configurazione particolare nella gestione dei raw sockets;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;lanciando il comando da root, nmap assume l'utilizzo di yutte quelle capabilities da superutente che sono sì più precise, ma si basano sull'utilizzo di chiamate evidentemente proibite all'interno di un Linux Container.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In ultima analisi, ho creato un output in formato xml; perché, direte? Dato che stavo tentando di parsare con pyhton e lo scan era già a metà, non me la sono sentita di cambiare :P&lt;/p&gt;
+&lt;p&gt;Magari cambierò il formato in "greppable" con -oG, ma non credo diminirebbe la grandezza del log..&lt;/p&gt;
+&lt;p&gt;Passando al test del proxy vero e proprio, il protagonista è netcat (il mio tool favorito):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;echo&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt; &lt;span class="ss"&gt;&amp;quot;GET http://google.com HTTP/1.0\n\host: google.com\n&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;nc&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="mi"&gt;8080&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;grep&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Location: http://www.google.&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;questa stringa invia semplicemente due righe all'ip /porta in questione tentando di fare una GET della pagina di google.com.&lt;/p&gt;
+&lt;p&gt;Se il server è configurato per fare da proxy, instraderà la richiesta passando indietro la pagina di google classica se ci si connette via http:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;HTTP/1.1 302 Found
+Cache-Control: private
+Content-Type: text/html; charset=UTF-8
+Location: http://www.google.it/?gfe_rd=cr&lt;span class="ni"&gt;&amp;amp;amp;&lt;/span&gt;ei=_5H4U7jVB6rD8gee1oDgCA
+Content-Length: 258
+Date: Sat, 23 Aug 2014 13:07:11 GMT
+Server: GFE/2.0
+Alternate-Protocol: 80:quic
+
+&lt;span class="nt"&gt;&amp;lt;HTML&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;HEAD&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;meta&lt;/span&gt; &lt;span class="na"&gt;http-equiv=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;content-type&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;content=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;text/html;charset=utf-8&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt; 
+  &lt;span class="nt"&gt;&amp;lt;TITLE&amp;gt;&lt;/span&gt;302 Moved&lt;span class="nt"&gt;&amp;lt;/TITLE&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;/HEAD&amp;gt;&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;BODY&amp;gt;&lt;/span&gt; 
+  &lt;span class="nt"&gt;&amp;lt;H1&amp;gt;&lt;/span&gt;302 Moved&lt;span class="nt"&gt;&amp;lt;/H1&amp;gt;&lt;/span&gt; 
+   The document has moved &lt;span class="nt"&gt;&amp;lt;A&lt;/span&gt; &lt;span class="na"&gt;HREF=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;http://www.google.it/?gfe_rd=cr&amp;amp;amp;ei=_5H4U7jVB6rD8gee1oDgCA&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;here&lt;span class="nt"&gt;&amp;lt;/A&amp;gt;&lt;/span&gt;. 
+ &lt;span class="nt"&gt;&amp;lt;/BODY&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/HTML&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ho messo l'accento sul grep, per considerare (ci ho messo un po a capire) che google rimanda alla homepage del paese di provenienza dell'ip e, dato che stiamo scansionando reti grandi, gli ip potrebbero arrivare da chissà dove, restituendo, come nel caso sopra, l Location a google.it invece che la richiesta (google.com).&lt;/p&gt;
+&lt;p&gt;Poco altro c'è da dire sullo script, se non che manda una mail all'interessato al termine dello scan, che dura parecchie ore, con in allegato la lista di ip, se almeno un ip è risultato positivo dopo il check incrociato.&lt;/p&gt;
+&lt;p&gt;Fonti:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href="http://it-ovid.blogspot.se/2012/05/nmap-routedstnetlink-cant-find.html"&gt;it-ovid&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://nmap.org/book/man.html"&gt;nmap.org&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://www.unix.com/shell-programming-and-scripting/24289-need-attach-txt-file-while-sending-mail.html"&gt;unix.com&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Happy Hacking &amp;amp; stay TuNeD&lt;/p&gt;</content><category term="nmap"></category><category term="bash"></category><category term="proxy"></category><category term="hacking"></category></entry><entry><title>WR703N costruire porta seriale e installare openwrt</title><link href="https://www.j0llyb0x.org/2012/wr703n-costruire-porta-seriale-e-installare-openwrt.html" rel="alternate"></link><published>2012-10-17T00:00:00+02:00</published><updated>2012-10-17T00:00:00+02:00</updated><author><name>j0lly</name></author><id>tag:www.j0llyb0x.org,2012-10-17:/2012/wr703n-costruire-porta-seriale-e-installare-openwrt.html</id><summary type="html">&lt;p&gt;Dopo mesi d'assenza ho trovato la forza per ricominciare a scrivere, e questa volta parlerò di come installare openwrt su un WR703N, grazie anche ad una porta seriale.&lt;/p&gt;
+&lt;p&gt;Da qualche giorno mi è arrivato un simpatico router microscopico della TP-Link: il &lt;a href="http://www.tp-link.com.cn/pages/product-detail.asp?d=225"&gt;WR703N&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="WR703N" src="https://www.j0llyb0x.org/images/openwrt-1.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;Questo aggeggio miniaturizzato è più piccolo di una …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Dopo mesi d'assenza ho trovato la forza per ricominciare a scrivere, e questa volta parlerò di come installare openwrt su un WR703N, grazie anche ad una porta seriale.&lt;/p&gt;
+&lt;p&gt;Da qualche giorno mi è arrivato un simpatico router microscopico della TP-Link: il &lt;a href="http://www.tp-link.com.cn/pages/product-detail.asp?d=225"&gt;WR703N&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="WR703N" src="https://www.j0llyb0x.org/images/openwrt-1.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;Questo aggeggio miniaturizzato è più piccolo di una scatola di caramelle, ma possiede tante qualità tra cui, che ci si può installare Linux e divertirsi un casino!&lt;/p&gt;
+&lt;p&gt;La prima cosa che ho fatto infatti è stato installare l'ultima release di Openwrt: &lt;a href="http://downloads.openwrt.org/attitude_adjustment/"&gt;attitude_adjustment&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Come dal &lt;a href="http://wiki.openwrt.org/toh/tp-link/tl-wr703n"&gt;wiki&lt;/a&gt;, questo piccolo portento monta 32MB di ram, 4MB nand e un processore atheros da 400Mhz!&lt;/p&gt;
+&lt;p&gt;Sempre dal wiki, si può vedere che esistono una valanga di progetti correlati:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Dalla semplice aggiunta di una &lt;a href="http://wiki.villagetelco.org/index.php?title=Building_a_Serial_Port_for_TL-WR703N"&gt;porta seriale;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Alla creazione di un &lt;a href="https://forum.openwrt.org/viewtopic.php?id=34188"&gt;hub usb&lt;/a&gt;;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;L'utilizzo della porta &lt;a href="https://forum.openwrt.org/viewtopic.php?id=35682"&gt;micro-usb anche come seriale&lt;/a&gt; O.o (complicato);&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;E il mio referito: il &lt;a href="http://www.minipwner.com/"&gt;minipwner&lt;/a&gt;!&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Insomma, si può tramutare questo piccolo gioiello da &lt;a href="http://www.ebay.it/sch/i.html?LH_AvailTo=101&amp;amp;_nkw=tp-link+tl-wr703n&amp;amp;_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A6366&amp;amp;rt=nc&amp;amp;_trksid=p3286.c0.m14&amp;amp;_sop=15&amp;amp;_sc=1"&gt;20€&lt;/a&gt; in un hub di rete mobile che, all'occorrenza, può anche diventare una stazione di Pentest.&lt;/p&gt;
+&lt;p&gt;Questo è proprio il tipo di progetto da Hacker nel quale mi volevo cimentare. Il mio esperimento, al momento della scrittura di quest'articolo, non è ancora terminato, quindi racconterò fino a dove sono arrivato, dato che di intoppi se ne possono trovare a iosa!&lt;/p&gt;
+&lt;p&gt;Per prima cosa mi sono sbarazzato del sistema OEM della TP-Link, facendo l'upload di un trunk di Openwrt che ora non è nemmeno disponibile (assimilato nella beta di &lt;a href="http://downloads.openwrt.org/attitude_adjustment/"&gt;attitude_adjustment&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Ovviamente come tutti i trunk che si rispettino il boot usciva con errore, lasciando la piccola schedina verde a lampeggiare senza vita. Io non sapevo cosa stesse succedendo, dato che non c'è nessun uscita monitor e non sapevo come avviare in &lt;em&gt;failsafe&lt;/em&gt; mode.&lt;/p&gt;
+&lt;p&gt;Per risolvere mi sono subito dato da fare per munirmi di una connessione seriale e poter vedere da terminale cosa non andava nel mio router. Per prima cosa, mi sono munito di un chip usb-rs232 che si può trovare sempre su ebay a 2/3 €; io ho acquistato &lt;a href="http://www.ebay.it/itm/USB-2-0-to-UART-TTL-6PIN-Connector-Module-Serial-Converter-CP2102-New-/190685792376?pt=LH_DefaultDomain_0&amp;amp;hash=item2c65c24878#ht_3725wt_1275"&gt;questo&lt;/a&gt;, che è stato letto senza problemi dalla mia Arch come CP210x. Ne esistono una marea, anche per meno di 1€, vedete voi se il chip va bene.&lt;/p&gt;
+&lt;p&gt;La cosa difficile di saldare sti tre benedetti connettori è che la scheda è talmente piccola che anche la saldatura è in condizioni davvero difficili. La foto mostra i punti dove saldare RX,TX e GND (ricordate di collegare i fili in maniera pari: Dx-Dx Rx-Rx) che sono davvero minuscoli.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="WR703NSerial" src="https://www.j0llyb0x.org/images/openwrt-2.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;Facendo come nell'immagine, si può anche alimentare il wr703n direttamente con la seriale, ma questa è una cosa che non mi interessava ed ho preferito attaccare solamente i tre cavi di connessione principali.&lt;/p&gt;
+&lt;p&gt;Con la nuova connessione seriale ho potuto vedermi il boot del router, grazie a &lt;a href="http://en.wikipedia.org/wiki/Minicom"&gt;minicom&lt;/a&gt; settata con questi parametri:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="minicom" src="https://www.j0llyb0x.org/images/openwrt-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;Ed ecco il boot! Ho dimenticato di catturare una schermata, ma il boot si fermava sempre dopo aver tentato di caricare il modulo per usb 2.0 ehci. In realtà ero un pò disperato, non sapendo come comportarmi. La provvidenza è però arrivata: un paio di giorni dopo è arrivatala la &lt;a href="http://downloads.openwrt.org/attitude_adjustment/12.09-beta/ar71xx/generic/"&gt;release beta&lt;/a&gt; ufficiale che, dopo avr installato, ha risolto tutti i problemi. Fortunatamente infatti, avevo installato la versione con un filesystem ro come lo Squashfs, che permette di mantenere alcune funzionalità anche se si dovesse avere problemi col sistema.&lt;/p&gt;
+&lt;p&gt;Nel WR703N, per entrare in modalità failsafe, è necessario che U-BOOT si inizializzi; dopo circa un paio di secondi dal caricamento del Kernel Openwrt lascia una finestra di 1 secondo circa per schiacciare la combinazione &lt;em&gt;F&lt;/em&gt;+Enter ed entrare in 'modalità sicura'.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="failsafe" src="https://www.j0llyb0x.org/images/openwrt-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;Dalla modalità sicura ho fatto un Telnet a 192.168.1.1 attaccando un cavo ethernet, creato una password di root&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;passwd&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;e fatto un scp:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;scp&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;~/&lt;/span&gt;&lt;span class="n"&gt;openwrtfile&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;sysupgrade&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="nv"&gt;@openwrt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nl"&gt;lan&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;fileblahblah&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ho fatto un bel upgrade e tanti saluti. Se doveste incontrare problemi insormontabili (dubito) c'è sempre il vecchio metodo del flash via &lt;a href="http://wiki.openwrt.org/doc/howto/generic.flashing.tftp"&gt;tftp&lt;/a&gt;: il WR703N ha U-BOOT con un client incorporato; usate quindi la guida generica e poi deviate nella parte con client tftp... Per entrare nel bootloader all'avvio dovete digitare 'tpl'+&lt;em&gt;enter&lt;/em&gt; nel mezzo secondo dopo aver dato corrente al router; vi apparirà una schermata come questa, da dove potrete seguire la guida per il flash via bootloader&lt;/p&gt;
+&lt;p&gt;&lt;img alt="u-boot" src="https://www.j0llyb0x.org/images/openwrt-5.png"&gt;&lt;/p&gt;
+&lt;p&gt;Ora che abbiamo Openwrt installato e funzionante.... è ora di riposare perché c'ho messo 4 ore di smadonnate e quindi il SETUP e la futura costruzione del minipowner sarà per i prossimi articoli.&lt;/p&gt;
+&lt;p&gt;Spero sia stato utile anche perchè non ho trovato molto in lingua italiana riguardo a questo gioiellino e a come fare quello che sto facendo.&lt;/p&gt;
+&lt;p&gt;Alla fase  2: _SETUP e tuning _di openwrt &lt;a href="http://downloads.openwrt.org/attitude_adjustment/"&gt;attitude_adjustment&lt;/a&gt;.&lt;/p&gt;</content><category term="openwrt"></category><category term="seriale"></category><category term="hacking"></category><category term="hardware"></category></entry><entry><title>Fast connection sharing</title><link href="https://www.j0llyb0x.org/2012/fast-connection-sharing.html" rel="alternate"></link><published>2012-03-29T00:00:00+02:00</published><updated>2012-03-29T00:00:00+02:00</updated><author><name>j0lly</name></author><id>tag:www.j0llyb0x.org,2012-03-29:/2012/fast-connection-sharing.html</id><summary type="html">&lt;p&gt;recentemente ho avuto la necessità di condividere una connessione 3g con 9 tra pc e mac avendo solamente il mio portatile e una chiavetta umts. Data la mia ignoranza ho dovuto smanettare per un paio di giorni, ma alla fine sono arrivato ad una conclusione decente della quale vorrei rendervi …&lt;/p&gt;</summary><content type="html">&lt;p&gt;recentemente ho avuto la necessità di condividere una connessione 3g con 9 tra pc e mac avendo solamente il mio portatile e una chiavetta umts. Data la mia ignoranza ho dovuto smanettare per un paio di giorni, ma alla fine sono arrivato ad una conclusione decente della quale vorrei rendervi partecipi. Ovviamente, questo metodo è adattabile per qualsiasi tipo condivisione, sul quale farò una guida un poco più generale. Nella pratica i passaggi che ho seguito sono essenzialmente 3:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;connettersi alla linea 3g:&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;preparare la scheda wireless alla condivisione;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;preparare l'OS a condividere la connessione;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Prima di tutto è necessario connettersi con un'interfaccia ad internet; per far ciò io ho utilizzato una&lt;/p&gt;
+&lt;p&gt;chiavetta 3g, e con l'ausilio di &lt;a href="http://freecode.com/projects/wvdial"&gt;wvdial&lt;/a&gt; (&lt;a href="http://www.linuxcommand.org/man_pages/wvdial1.html"&gt;qui&lt;/a&gt; il README)ho allacciato una connessione ppp0 (point-to-point) al mio provider. Per l'utilizzo di wvdial è necessario settare i parametri specifici per ogni provider; fortunatamente ho trovato &lt;a href="http://www.istitutomajorana.it/index.php?option=com_content&amp;amp;task=view&amp;amp;id=1229&amp;amp;Itemid=69"&gt;questa&lt;/a&gt; pagina dove si possono trovare le configurazioni per le principali compagnie italiane.&lt;/p&gt;
+&lt;p&gt;Fatto ciò si può passare alla messa a punto della scheda di rete che servirà a condividere la connessione con altri dispositivi.&lt;/p&gt;
+&lt;p&gt;La scheda può essere di qualsiasi tipo, anche virtuale, ma nel mio caso avevo necessità di connettere 9 pc in una stanza, quindi ho usato la mia scheda wi-fi.&lt;/p&gt;
+&lt;p&gt;Per prima cosa bisogna attivare l'interfaccia e assegnare un indirizzo e una maschera di rete; in secondo luogo va messa in ad-hoc mode (sarebbe stato meglio in master mode, ma non tutte le schede lo supportano) e selezionare un &lt;em&gt;essid&lt;/em&gt; per la connessione; in fine mettere una protezione: quest'ultimo passo è facoltativo perché l'unica protezione possibile via iwconfig è di tipo wep, tra l'altro non compatibile con tutti i sistemi, infatti io ho optato per una soluzione di filtraggio di indirizzi mac via iptables.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# &lt;span class="nv"&gt;Put&lt;/span&gt; &lt;span class="nv"&gt;the&lt;/span&gt; &lt;span class="nv"&gt;interface&lt;/span&gt; &lt;span class="nv"&gt;in&lt;/span&gt; &lt;span class="nv"&gt;Ad&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;hoc&lt;/span&gt; &lt;span class="nv"&gt;mode&lt;/span&gt;
+&lt;span class="nv"&gt;iwconfig&lt;/span&gt; &lt;span class="nv"&gt;wlan0&lt;/span&gt; &lt;span class="nv"&gt;mode&lt;/span&gt; &lt;span class="nv"&gt;Ad&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;Hoc&lt;/span&gt;
+
+# &lt;span class="nv"&gt;Set&lt;/span&gt; &lt;span class="nv"&gt;the&lt;/span&gt; &lt;span class="nv"&gt;essid&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;the&lt;/span&gt; &lt;span class="nv"&gt;access&lt;/span&gt; &lt;span class="nv"&gt;point&lt;/span&gt;
+&lt;span class="nv"&gt;iwconfig&lt;/span&gt; &lt;span class="nv"&gt;wlan0&lt;/span&gt; &lt;span class="nv"&gt;essid&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;_youressid_&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+
+# &lt;span class="nv"&gt;Set&lt;/span&gt; &lt;span class="nv"&gt;auto&lt;/span&gt; &lt;span class="nv"&gt;channel&lt;/span&gt;
+&lt;span class="nv"&gt;iwconfig&lt;/span&gt; &lt;span class="nv"&gt;wlan0&lt;/span&gt; &lt;span class="nv"&gt;channel&lt;/span&gt; &lt;span class="nv"&gt;auto&lt;/span&gt;
+
+# &lt;span class="nv"&gt;Set&lt;/span&gt; &lt;span class="nv"&gt;the&lt;/span&gt; &lt;span class="nv"&gt;security&lt;/span&gt; &lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;WEP&lt;/span&gt;&lt;span class="ss"&gt;)&lt;/span&gt;
+
+# &lt;span class="nv"&gt;Set&lt;/span&gt; &lt;span class="nv"&gt;Key&lt;/span&gt;
+&lt;span class="nv"&gt;iwconfig&lt;/span&gt; &lt;span class="nv"&gt;wlan0&lt;/span&gt; &lt;span class="nv"&gt;key&lt;/span&gt; &lt;span class="nv"&gt;restricted&lt;/span&gt; &lt;span class="nv"&gt;s&lt;/span&gt;:&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;_yourpassword_&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+
+# &lt;span class="nv"&gt;Set&lt;/span&gt; &lt;span class="nv"&gt;encryption&lt;/span&gt;
+&lt;span class="nv"&gt;iwconfig&lt;/span&gt; &lt;span class="nv"&gt;wlan0&lt;/span&gt; &lt;span class="nv"&gt;key&lt;/span&gt; &lt;span class="nv"&gt;on&lt;/span&gt;
+
+&lt;span class="nv"&gt;ifconfig&lt;/span&gt; &lt;span class="nv"&gt;wlan0&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;_chosenip_&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;24&lt;/span&gt; &lt;span class="nv"&gt;netmask&lt;/span&gt; &lt;span class="mi"&gt;255&lt;/span&gt;.&lt;span class="mi"&gt;255&lt;/span&gt;.&lt;span class="mi"&gt;255&lt;/span&gt;.&lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="nv"&gt;up&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ovviamente dovete sostituire a wlan0 il nome della vostra interfaccia, e scegliere essid, password e indirizzo ip per l'interfaccia.&lt;/p&gt;
+&lt;p&gt;Un passaggio opzionale è quello di gestire i clients con un server  DHCP, usando dnsmasq:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;dnsmasq&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="k"&gt;C&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="k"&gt;null&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;
+&lt;span class="c1"&gt;--domain-needed \&lt;/span&gt;
+&lt;span class="c1"&gt;--bogus-priv \&lt;/span&gt;
+&lt;span class="c1"&gt;--interface=wlan0 \&lt;/span&gt;
+&lt;span class="c1"&gt;--dhcp-option=6,8.8.8.8,8.8.4.4 \&lt;/span&gt;
+&lt;span class="c1"&gt;--listen-address=&amp;quot;_chosenip_&amp;quot; \&lt;/span&gt;
+&lt;span class="c1"&gt;--dhcp-range=&amp;quot;_chosenrange_&amp;quot;,12h&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Potete passare questo codice in uno script ed eseguirlo; da notare che in listen-address è necessario mettere lo stesso indirizzo usato in precedenza, mentre in dhcp-range bisogna semplicemente scegliere il numero e l'intervallo di indirizzi da assegnare tramite dhcp (per esempio 192.168.1.2,192.168.1.254).&lt;/p&gt;
+&lt;p&gt;Ora che avete una connessione attiva ed un'interfaccia correttamente settata per fare da access point, non vi resta che organizzare l'OS in maniera da condividere la connessione:&lt;/p&gt;
+&lt;p&gt;per prima cosa bisogna impostare il kernel in maniera da forwardare il traffico con questo comando:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; &lt;span class="n"&gt;sysctl&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="n"&gt;net&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ipv4&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ip_forward&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Dove 1 sta per attivo e 0 per inibito. In secondo luogo bisogna utilizzare iptables per forwardare un'interfaccia verso l'altra, e per creare una nat sull'interfaccia connessa ad internet. In questo caso consideriamo ppp0 l'interfaccia connessa ad internet mentre wlan0 quella che farà da access point:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;sudo&lt;/span&gt; &lt;span class="n"&gt;iptables&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="n"&gt;nat&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;POSTROUTING&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt; &lt;span class="n"&gt;ppp0&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;MASQUERADE&lt;/span&gt;
+
+&lt;span class="n"&gt;sudo&lt;/span&gt; &lt;span class="n"&gt;iptables&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="k"&gt;FORWARD&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="n"&gt;wlan0&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;per correttezza, qua è segnata una policy ACCEPT all, mentre sarebbe molto meglio, come ho anch'io fatto, impostare una policy per accettare uno ad uno i pc tramite indirizzo mac, e successivamente una policy DROP all per le rimanenti connessioni:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;sudo&lt;/span&gt; &lt;span class="n"&gt;iptables&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="k"&gt;FORWARD&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="n"&gt;wlan0&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="n"&gt;mac&lt;/span&gt; &lt;span class="c1"&gt;--mac-source &amp;quot;_macaddresstoaccept_&amp;quot; -j ACCEPT&lt;/span&gt;
+&lt;span class="n"&gt;sudo&lt;/span&gt; &lt;span class="n"&gt;iptables&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="k"&gt;FORWARD&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="n"&gt;wlan0&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="k"&gt;DROP&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ricordatevi che è importante inserire prima i filtri agli indirizzi mac, e poi la policy deny, se no iptables bloccherà tutto prima ancora di leggere quali indirizzi accettare.&lt;/p&gt;
+&lt;p&gt;Sinceramente, ho collezionato un paio di scripts trovati in rete (sfortunatamente non ho recuperato tutte le fonti) e le ho modificate per le mie necessità, quindi vi posto lo script che, tra l'altro, spero di sviluppare per rendere un poco più carino e utile.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://pastebin.com/AzA4NHYM"&gt;Qui&lt;/a&gt; il link, (alla riga 61 c'è  un riferimento ad impostazioni iptables salvate con anche una lista di mac address)  non dimenticate di renderlo eseguibile e di lanciarlo con privilegi di root.&lt;/p&gt;
+&lt;p&gt;Fatemi sapere se lo trovate utile, e soprattutto se avete qualche suggerimento per migliorarlo.
+P.S.&lt;/p&gt;
+&lt;p&gt;Ammetto che la limitazione di una protezione wep o mac filtering è molto limitante, ma lo script è per uno sharing volante; cercherò di implementare l'uso di protezione wpa, o più semplicemente farò un tutorial per l'uso di &lt;a href="http://hostap.epitest.fi/hostapd/"&gt;hostapd&lt;/a&gt; che implementa già moltissime &lt;em&gt;features&lt;/em&gt;.&lt;/p&gt;</content><category term="bash"></category><category term="network"></category></entry><entry><title>[GUIDA] DNS Tunnel with Iodine PARTE II</title><link href="https://www.j0llyb0x.org/2012/guida-dns-tunnel-with-iodine-parte-ii.html" rel="alternate"></link><published>2012-01-15T00:00:00+01:00</published><updated>2012-01-15T00:00:00+01:00</updated><author><name>j0lly</name></author><id>tag:www.j0llyb0x.org,2012-01-15:/2012/guida-dns-tunnel-with-iodine-parte-ii.html</id><summary type="html">&lt;p&gt;Se non sapete cos'è un DNS o un tunnel, leggetevi &lt;a href="http://j0llyb0x.org/intro-dns-tunnel-con-iodine-01-2012/"&gt;l'articolo&lt;/a&gt; introduttivo sul DNS tunneling.&lt;/p&gt;
+&lt;p&gt;Prima di tutto presentiamo Iodine:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;This&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;piece&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="n"&gt;software&lt;/span&gt; &lt;span class="n"&gt;that&lt;/span&gt; &lt;span class="n"&gt;lets&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;tunnel&lt;/span&gt; &lt;span class="n"&gt;IPv4&lt;/span&gt; &lt;span class="k"&gt;data&lt;/span&gt; &lt;span class="n"&gt;through&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;DNS&lt;/span&gt;
+&lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="n"&gt;This&lt;/span&gt; &lt;span class="n"&gt;can&lt;/span&gt; &lt;span class="n"&gt;be&lt;/span&gt; &lt;span class="n"&gt;usable&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;different&lt;/span&gt; &lt;span class="n"&gt;situations&lt;/span&gt; &lt;span class="k"&gt;where&lt;/span&gt; &lt;span class="n"&gt;internet&lt;/span&gt; &lt;span class="k"&gt;access&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt;
+&lt;span class="n"&gt;firewalled&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;but&lt;/span&gt; &lt;span class="n"&gt;DNS …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/blockquote&gt;</summary><content type="html">&lt;p&gt;Se non sapete cos'è un DNS o un tunnel, leggetevi &lt;a href="http://j0llyb0x.org/intro-dns-tunnel-con-iodine-01-2012/"&gt;l'articolo&lt;/a&gt; introduttivo sul DNS tunneling.&lt;/p&gt;
+&lt;p&gt;Prima di tutto presentiamo Iodine:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;This&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;piece&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="n"&gt;software&lt;/span&gt; &lt;span class="n"&gt;that&lt;/span&gt; &lt;span class="n"&gt;lets&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;tunnel&lt;/span&gt; &lt;span class="n"&gt;IPv4&lt;/span&gt; &lt;span class="k"&gt;data&lt;/span&gt; &lt;span class="n"&gt;through&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;DNS&lt;/span&gt;
+&lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="n"&gt;This&lt;/span&gt; &lt;span class="n"&gt;can&lt;/span&gt; &lt;span class="n"&gt;be&lt;/span&gt; &lt;span class="n"&gt;usable&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;different&lt;/span&gt; &lt;span class="n"&gt;situations&lt;/span&gt; &lt;span class="k"&gt;where&lt;/span&gt; &lt;span class="n"&gt;internet&lt;/span&gt; &lt;span class="k"&gt;access&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt;
+&lt;span class="n"&gt;firewalled&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;but&lt;/span&gt; &lt;span class="n"&gt;DNS&lt;/span&gt; &lt;span class="n"&gt;queries&lt;/span&gt; &lt;span class="k"&gt;are&lt;/span&gt; &lt;span class="n"&gt;allowed&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/blockquote&gt;
+&lt;p&gt;Andate nella &lt;a href="http://code.kryo.se/iodine/"&gt;homepage&lt;/a&gt; e scaricate l'ultima versione, disponibile per praticamente tutti i sistemi operativi!&lt;/p&gt;
+&lt;p&gt;Se siete su OSX avete un paio di opzioni; o vi installate una macchina virtuale con &lt;a href="https://www.virtualbox.org/"&gt;virtualbox&lt;/a&gt;, magari &lt;a href="http://www.backtrack-linux.org/"&gt;Back|Track&lt;/a&gt; così iodine ve lo trovate già dentro, o vi scaricate Xcode dall'apple store e procedete con un semplice "sudo &lt;em&gt;make &amp;amp; make install&lt;/em&gt;", oppure vi installate &lt;a href="https://github.com/mxcl/homebrew"&gt;homebrew&lt;/a&gt; e lo utilizzate da lì. Queste sono le opzioni che ritengo più comode per avere questo programma in OSX.&lt;/p&gt;
+&lt;p&gt;Tenete conto che il programma è formato da due parti, il client e il server; ovviamente dovete avere un computer con un Iodine server in attesa di una connessione, come ne ho parlato nel post precedente.&lt;/p&gt;
+&lt;p&gt;I comandi per lanciare il server (Iodined) sono:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;iodined&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;miodominio&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;L'ip è la maschera che darete alla vostra rete virtuale (o tunnel), mentre il dominio è quello fittizio al quale il server è stato delegato (x.yourdomain.org).&lt;/p&gt;
+&lt;p&gt;P.S. è necessario possedere i permessi di amministratore per gestire iodine;&lt;/p&gt;
+&lt;p&gt;P.P.S Sul server (linux) dovrete anche settare l'ip forwarding se volete usare un tunnel ssh direttamente dalla stessa macchina dove gira Iodined; da root digitate:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;echo&lt;/span&gt; &lt;span class="ss"&gt;&amp;quot;1&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;proc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;net&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;ipv4&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;ip_forward&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ora non vi resta che lanciare il client dalla macchina dalla quale volete instaurare il tunnel &lt;em&gt;et voilà&lt;/em&gt;, tunnel servito!&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;sudo&lt;/span&gt; &lt;span class="n"&gt;iodine&lt;/span&gt; &lt;span class="n"&gt;ipserveriodined&lt;/span&gt;  &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;miodominio&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ora, tutto questo procedimento risulterebbe inutile se la rete fosse patchata, quindi è sempre buona norma darsi conto di che tipo di rete abbiamo di fronte. Le possibilità sono pressappoco tre:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;il gateway permette query DNS di ogni tipo e senza restrizioni: non è nemmeno necessario avere un dominio perché è sufficiente dare un nome fittizio da ricercare (es.&lt;em&gt; iodined 10.0.0.1 pinco.pallino&lt;/em&gt; e ovviamente lo stesso per il client);&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;il gateway permette query DNS solamente ad alcuni server o solo al server DNS interno: in questo caso bisogna utilizzare il metodo esposto prima, con la particolarità che se il server DNS utilizzabile è solo quello del gateway (99% delle volte è il classico 192.168.1.1) bisognerà impostare quello come indirizzo per il tunnel (es. iodine 192.168.1.1 a.mydomain.com);&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;La terza opzione è che il muro sia solido e ben costruito, e quindi vi attaccate e pagate il provider 5 € per mezz'ora di internet!&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Per capire il livello di sicurezza bastano un paio di &lt;em&gt;nslookup&lt;/em&gt; o &lt;em&gt;dig&lt;/em&gt; come spiegato &lt;a href="http://dev.kryo.se/iodine/wiki/HowtoSetup"&gt;qua&lt;/a&gt;!&lt;/p&gt;
+&lt;p&gt;Questo è all'incirca quanto si deve sapere per avere un tunnel sempre pronto a portata di mano. Alcuni accorgimenti da seguire potrebbero essere:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;utilizzare la funzione password implementata in Iodine, anche se è una protezione piuttosto blanda;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;limitare le connessioni al server Iodined;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;l'accorgimento più importante è comunque utilizzare una connessione ssh per criptare il flusso di dati che, per questo protocollo, resterebbero se no sempre in chiaro!&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Quindi, per concludere le operazioni, il comando ssh per instaurare un "tunnel nel tunnel" è:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;ssh&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;fN&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;CD&lt;/span&gt; &lt;span class="n"&gt;xxxx&lt;/span&gt; &lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="mf"&gt;@10.0.0.1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I comandi stanno a significare che ssh deve andare in background (-f) anche senza comandi (-N) e deve instaurare una connessione compressa (-C) e fare un bind (-D) sulla porta locale xxxx (scegliete una porta non standard, magari alta come una 64000 o giù di lì).&lt;/p&gt;
+&lt;p&gt;Ecco fatto, ora settate per bene il proxy sul vostro browser con la porta da voi scelta ed avrete una navigazione criptata e free, provare per credere!&lt;/p&gt;
+&lt;p&gt;allego schermata:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="settings" src="https://www.j0llyb0x.org/images/iodine2-1.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;o con firerefox&lt;/p&gt;
+&lt;p&gt;&lt;img alt="settings" src="https://www.j0llyb0x.org/images/iodine2-2.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;per chrome la questione è un poco più complicata: dalle impostazioni proxy, venite reindirizzati alle preferenze generali di connessione del vostro sistema operativo e se cambiate il proxy questo vale per qualsiasi connessione e non solo per il browser; per questo, con chrome, vi consiglio un'estensione semplice semplice che vi permette di gestire il proxy solo per la navigazione: &lt;a href="https://chrome.google.com/webstore/detail/caehdcpeofiiigpdhbabniblemipncjj"&gt;proxy switchy&lt;/a&gt; vi permette di aggiungere il vostro bel socks proxy.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="switchy" src="https://www.j0llyb0x.org/images/iodine2-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;Molto bene, ore siete pronti per navigare in tranquillità!&lt;/p&gt;
+&lt;p&gt;fonti:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href="http://bottiger.org/wrote/29-Tunneling-traffic-through-DNS-using-Iodine-for-fun-and-profit"&gt;bottiger.org&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://otacon22.wordpress.com/2011/02/05/dns-tunneling/"&gt;octacon22&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://sadevil.org/blog/2008/07/07/iodine-dns-tunnel-on-your-mac-to-escape-those-evil-firewalls/"&gt;sadevil&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://dev.kryo.se/iodine/wiki/HowtoSetup"&gt;kryo.se&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</content><category term="iodine"></category><category term="dns"></category><category term="hacking"></category></entry><entry><title>[GUIDA] DNS Tunnel con Iodine PARTE I</title><link href="https://www.j0llyb0x.org/2012/guida-dns-tunnel-con-iodine-parte-i.html" rel="alternate"></link><published>2012-01-05T00:00:00+01:00</published><updated>2012-01-05T00:00:00+01:00</updated><author><name>j0lly</name></author><id>tag:www.j0llyb0x.org,2012-01-05:/2012/guida-dns-tunnel-con-iodine-parte-i.html</id><summary type="html">&lt;p&gt;Per chi non lo sapesse, un tunnel DNS è una maniera per trasportare dati derivanti da altri protocolli attraverso  la porta 53 UDP, cioè poter far passare qualsiasi connessione (ad esempio ssh od http)  attraverso una porta non convenzionale cioè..... un bel proxy tunnel che bypassa qualsiasi restrizione sulla porta …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Per chi non lo sapesse, un tunnel DNS è una maniera per trasportare dati derivanti da altri protocolli attraverso  la porta 53 UDP, cioè poter far passare qualsiasi connessione (ad esempio ssh od http)  attraverso una porta non convenzionale cioè..... un bel proxy tunnel che bypassa qualsiasi restrizione sulla porta 80/433 (un hotspot per intenderci).&lt;/p&gt;
+&lt;p&gt;Per le note legali, ricordo di leggere il &lt;a href="http://j0llyb0x.org/disclaimer/"&gt;disclamer&lt;/a&gt; del blog&lt;/p&gt;
+&lt;p&gt;Alt, un passo indietro: cosa è un DNS?&lt;/p&gt;
+&lt;p&gt;Il Domain Name System è il sistema mondiale, attivo dal 1987, per identificare gli IP delle macchine tramite nomi a dominio, molto più leggibili e memorizzabili dalla mente umana.&lt;/p&gt;
+&lt;p&gt;Ammetto che l'argomento non è nuovo; in realtà già nel 2000 se ne parlava in alcuni ambienti e nel 2005  Dan Kaminsky aveva già realizzato un programma in perl per l'implementazione del protocollo utilizzato per questo tipo di tunnel, il "NSTX" (Name Server Transfer Protocol) chiamato OzymanDNS.&lt;/p&gt;
+&lt;p&gt;Il programma che utilizzo e del quale parlerò è &lt;a href="http://code.kryo.se/iodine/"&gt;Iodin&lt;/a&gt;&lt;a href="http://code.kryo.se/iodine/"&gt;e&lt;/a&gt;, già inserito in molte distro di pentest come &lt;a href="http://www.backtrack-linux.org/backtrack/backtrack-5-release/"&gt;BackTrack&lt;/a&gt; e soprattutto nella maggioranza dei repository di qualsiasi distro con una community minimamente attiva. Il programma è utilizzabile su praticamente qualsiasi piattaforma (io l'ho provato su Linux, OSX e Windows) e, dai post letti qua e là per il web è ad oggi l'implementazione del protocollo NSTX che riesce a garantire più stabilità e prestazioni rispetto ad altre &lt;a href="http://en.cship.org/wiki/DNS_tunnel"&gt;alternative&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Ma come funziona Il DNS è perché dovremmo parlarne in questo ambito?&lt;/p&gt;
+&lt;p&gt;Allora, il Domain Name System è il più grande database distribuito del pianeta che serve; la sua funzione è principalmente di associare a ciascun ip fisico un nome di dominio che serva ad identificarlo e memorizzarlo più facilmente per l'essere umano. queste richieste possono essere fatte da programmi o da altri server DNS; questo perché, come detto prima, il sistema è formato in maniera distribuita e gerarchica dove esistono 13 Root server che si occupano dei domini di 1° livello (&lt;em&gt;.org, &lt;/em&gt;.com, *.net etc.) e demandano ad altri server la risoluzione dei domini di 2°, 3° livello e così via.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="dns" src="https://www.j0llyb0x.org/images/iodine-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;La domanda sorge spontanea: e cosa ce ne facciamo di sta roba?&lt;/p&gt;
+&lt;p&gt;Semplice, con un pò di settaggi potremo avere il nostro tunnel personale, poco controllato e perfettamente criptato, per navigare in tutta sicurezza in giro per il globo.&lt;/p&gt;
+&lt;p&gt;Forse sono stato un po ottimista, ma ad oggi (più di 11 anni dalla scoperta) sono poche le compagnie che controllano questo tipo di cose.&lt;/p&gt;
+&lt;p&gt;La parte più difficile da settare per questo tipo di tunnel è proprio il nameserver e i records del dominio, quindi cominceremo proprio da qua!&lt;/p&gt;
+&lt;p&gt;Nel mio caso ho acquistato un dominio su Godaddy per 6$ l'anno (assicuratevi che il vostro registrar vi dia il controllo sui record DNS del vostro dominio o andate &lt;a href="https://web.gratisdns.dk/"&gt;qua&lt;/a&gt; per farveli hostare) ed ho semplicemente aggiunto un subdominio (ns.miodominio.com) con un A record, ed l'ho assegnato come nameserver per un subdominio fittizio (x.miodominio.com); in questo modo, in qualsiasi parte del mondo io sia, se faccio una quary per il subdominio fittizio (x.miodominio.com), i vari server DNS finiranno per chiedere al mio subdominio (ns.miodominio.com) dove esso sia!&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screen" src="https://www.j0llyb0x.org/images/iodine-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screen" src="https://www.j0llyb0x.org/images/iodine-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;ovviamente al posto di &lt;em&gt;yourip&lt;/em&gt; ci sarà il vostro ip statico (magari comprato tramite un &lt;a href="http://www.lowendbox.com/"&gt;vps economico&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Ora che avete settato questi parametri non vi resta che attendere, perché per delegare ns.miodominio.com come nameserver per x.miodominio.com esso deve essere "propagato" verso i DNS server superiori e ci potrebbe volere fino ad 1 giorno o 2, anche se in genere il processo viene eseguito in meno di un'ora.&lt;/p&gt;
+&lt;p&gt;Bene, questa era la parte più complicata e che mi è costata un poco intendere al principio, ma ora che siamo pronti potremo utilizzare vari metodi per sfruttare questo tunnel.&lt;/p&gt;
+&lt;p&gt;PS&lt;/p&gt;
+&lt;p&gt;Se state cercando di hostare il vostro fake DNS server su un router o su qualsiasi sistema con IP dinamico, potete saltare la parte del record A e settare come NS record il vostro dominio &lt;a href="http://www.no-ip.com/"&gt;no-ip&lt;/a&gt; o &lt;a href="http://dyn.com/dns/dyndns-free/"&gt;dyndns&lt;/a&gt; che punta al benedetto server.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screen" src="https://www.j0llyb0x.org/images/iodine-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;Della parte tecnica rispetto a Iodine ne parlerò nel prossimo articolo perché questo mi sembra già abbastanza denso e lunghetto...&lt;/p&gt;
+&lt;p&gt;fonti:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href="http://www.h-i-r.net/2010/03/dns-tunneling-part-1-intro-and.html"&gt;hir.net&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://dnstunnel.de/"&gt;dnstunnel&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://www.slideshare.net/bsideslondon/dns-tunnelling-its-all-in-the-name"&gt;slideshare&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://bottiger.org/wrote/29-Tunneling-traffic-through-DNS-using-Iodine-for-fun-and-profit"&gt;bottiger&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</content><category term="iodine"></category><category term="hacking"></category><category term="dns"></category></entry></feed>

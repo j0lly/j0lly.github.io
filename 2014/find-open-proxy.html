@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Un poco annoiato, ieri ho deciso di annotarmi qualche proxy aperto che potesse servire a vari scopi... :P H pensato sarebbe stato un ottimo playground per python e xml...">
+        <meta name="keywords" content="bash, hacking, nmap, proxy">
+        <link rel="icon" href="https://www.j0llyb0x.org/favicon.ico">
+
+        <title>find open proxy - j0llyb0x</title>
+
+        <!-- Stylesheets -->
+        <link href="https://www.j0llyb0x.org/theme/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://www.j0llyb0x.org/theme/css/fonts.css" rel="stylesheet">
+        <link href="https://www.j0llyb0x.org/theme/css/nest.css" rel="stylesheet">
+        <link href="https://www.j0llyb0x.org/theme/css/pygment.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <link href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Full Atom Feed" />
+        <link href="https://www.j0llyb0x.org/feeds/{slug}.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Categories Atom Feed" />
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <!-- Google Analytics -->
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-18259053-2', 'auto');
+          ga('send', 'pageview');
+        </script>
+        <!-- /Google Analytics -->
+
+
+    </head>
+
+    <body>
+
+        <!-- Header -->
+    <div class="header-container gradient">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="https://www.j0llyb0x.org/"><img class="mr20" src="https://www.j0llyb0x.org/images/logo.png" alt="logo"></a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="https://www.j0llyb0x.org/">Homepage</a>
+                                <a href="https://www.j0llyb0x.org/categories.html">Categories</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">find open proxy</h1>
+                      <p class="header-date">By <a href="https://www.j0llyb0x.org/author/j0lly.html">j0lly</a>, Sat 23 August 2014, in category <a href="https://www.j0llyb0x.org/category/hacking.html">Hacking</a></p>
+                      <div class="header-underline"></div>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="https://www.j0llyb0x.org/tag/bash.html">bash</a>, <a href="https://www.j0llyb0x.org/tag/hacking.html">hacking</a>, <a href="https://www.j0llyb0x.org/tag/nmap.html">nmap</a>, <a href="https://www.j0llyb0x.org/tag/proxy.html">proxy</a>                      </p>
+                  </div>
+              </div>
+        </div>
+    </div>
+    <!-- /Header -->
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    <div class="container content">
+        <p>Un poco annoiato, ieri ho deciso di annotarmi qualche proxy aperto che potesse servire a vari scopi... :P</p>
+<p><img alt="nmap" src="https://www.j0llyb0x.org/images/nmap-1.jpg"></p>
+<p>H pensato sarebbe stato un ottimo playground per python e xml (xml.minidom,xml.etree,BeautifulSoup) ma sono rimasto scottato dalle mie risorse; il Vps sul quale sto lavorando è un Lxc (Linux container) openvz con 512Mb di ram.</p>
+<p>Dato che le liste di indirizzi sono /16, il file in formato xml  è grosso più di 20Mb, python si mangiava tutta la memoria all'atto di importare il file.</p>
+<p>Certo, avrei potuto cominciare studiando la maniera di ottimizzare il codice e prende chunk di dati, ma dato che volevo produrre qualcosa di funzionante prima di lasciare un'altra idea a metà, ho rifatto tutto in 3 linee di bash senza nemmeno utilizzare un decimo della memoria che python utilizza, solo a leggere il file...</p>
+<p>Con questo non voglio dire nulla, se non che le mie conoscenze di python sono così basse che non mi permettono nemmeno di implementare 3 righe di script senza perdere 3 giorni; pazienza, sarà per la prossima idea (tanto quelle non finiscono mai :P ).</p>
+<p>Quindi, passando al topic, ho creato un piccolo script che facesse al caso mio.</p>
+<p>Le dipendenze sono:</p>
+<ul>
+<li>
+<p>nmap,</p>
+</li>
+<li>
+<p>nc,</p>
+</li>
+<li>
+<p>grep</p>
+</li>
+<li>
+<p>mailx,</p>
+</li>
+<li>
+<p>uuencode.</p>
+</li>
+</ul>
+<p>Nulla di più.</p>
+<p>Il codice lo trovate nel <a href="https://gist.github.com/j0lly/89c82bb5aac9116c5b7e">gist</a> linkato.</p>
+<p>Lo script è triviale, ma vale la pena annotare qualche switch e comando utilizzato in modo da risparmiare tempo la prossima volta che ci si trova ad affrontare certi problemi.</p>
+<p>Per prima cosa il comando nmap utilizzato:</p>
+<p>nmap --script http-open-py.roxnse  -Pn -P0 -n --unprivileged  -T4 $1.0.0/16  -p 8080 -oX ${1}.0.0</p>
+<p>lo script http-open-proxy.nse è utilizzato per testare la porta 8080 (nel codice ho trovato riferimenti a 4 porte, ma non ho avuto tempo di capire se aggiungendo porte allo switch -p vengono scansionate anch'esse) e cercare di scremare i target possibili.</p>
+<p>altro switch degno di nota è --unprivileged, dal man page:</p>
+<p><code>--unprivileged</code> (Assume that the user lacks raw socket privileges)</p>
+<p>This option is the opposite of <code>--privileged</code>. It tells Nmap to treat the user as lacking network raw socket and sniffing privileges. This is useful for testing, debugging, or when the raw network functionality of your operating system is somehow broken. The <code>NMAP_UNPRIVILEGED</code> environment variable may be set as an equivalent alternative to <code>--unprivileged</code>.</p>
+<p>Questo flag è stato indispensabile affinché nmap funzionasse a causa di due concorrenti cause:</p>
+<ul>
+<li>
+<p>la macchian è un Ovz container è probabilmente il network ha qualche configurazione particolare nella gestione dei raw sockets;</p>
+</li>
+<li>
+<p>lanciando il comando da root, nmap assume l'utilizzo di yutte quelle capabilities da superutente che sono sì più precise, ma si basano sull'utilizzo di chiamate evidentemente proibite all'interno di un Linux Container.</p>
+</li>
+</ul>
+<p>In ultima analisi, ho creato un output in formato xml; perché, direte? Dato che stavo tentando di parsare con pyhton e lo scan era già a metà, non me la sono sentita di cambiare :P</p>
+<p>Magari cambierò il formato in "greppable" con -oG, ma non credo diminirebbe la grandezza del log..</p>
+<p>Passando al test del proxy vero e proprio, il protagonista è netcat (il mio tool favorito):</p>
+<div class="highlight"><pre><span></span><span class="n">echo</span> <span class="o">-</span><span class="n">e</span> <span class="ss">&quot;GET http://google.com HTTP/1.0\n\host: google.com\n&quot;</span> <span class="o">|</span> <span class="n">nc</span> <span class="err">$</span><span class="n">i</span> <span class="mi">8080</span> <span class="o">|</span> <span class="n">grep</span> <span class="s1">&#39;Location: http://www.google.&#39;</span>
+</pre></div>
+
+
+<p>questa stringa invia semplicemente due righe all'ip /porta in questione tentando di fare una GET della pagina di google.com.</p>
+<p>Se il server è configurato per fare da proxy, instraderà la richiesta passando indietro la pagina di google classica se ci si connette via http:</p>
+<div class="highlight"><pre><span></span>HTTP/1.1 302 Found
+Cache-Control: private
+Content-Type: text/html; charset=UTF-8
+Location: http://www.google.it/?gfe_rd=cr<span class="ni">&amp;amp;</span>ei=_5H4U7jVB6rD8gee1oDgCA
+Content-Length: 258
+Date: Sat, 23 Aug 2014 13:07:11 GMT
+Server: GFE/2.0
+Alternate-Protocol: 80:quic
+
+<span class="nt">&lt;HTML&gt;</span>
+ <span class="nt">&lt;HEAD&gt;</span>
+  <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">&quot;content-type&quot;</span> <span class="na">content=</span><span class="s">&quot;text/html;charset=utf-8&quot;</span><span class="nt">&gt;</span> 
+  <span class="nt">&lt;TITLE&gt;</span>302 Moved<span class="nt">&lt;/TITLE&gt;</span>
+ <span class="nt">&lt;/HEAD&gt;</span>
+ <span class="nt">&lt;BODY&gt;</span> 
+  <span class="nt">&lt;H1&gt;</span>302 Moved<span class="nt">&lt;/H1&gt;</span> 
+   The document has moved <span class="nt">&lt;A</span> <span class="na">HREF=</span><span class="s">&quot;http://www.google.it/?gfe_rd=cr&amp;amp;ei=_5H4U7jVB6rD8gee1oDgCA&quot;</span><span class="nt">&gt;</span>here<span class="nt">&lt;/A&gt;</span>. 
+ <span class="nt">&lt;/BODY&gt;</span>
+<span class="nt">&lt;/HTML&gt;</span>
+</pre></div>
+
+
+<p>Ho messo l'accento sul grep, per considerare (ci ho messo un po a capire) che google rimanda alla homepage del paese di provenienza dell'ip e, dato che stiamo scansionando reti grandi, gli ip potrebbero arrivare da chissà dove, restituendo, come nel caso sopra, l Location a google.it invece che la richiesta (google.com).</p>
+<p>Poco altro c'è da dire sullo script, se non che manda una mail all'interessato al termine dello scan, che dura parecchie ore, con in allegato la lista di ip, se almeno un ip è risultato positivo dopo il check incrociato.</p>
+<p>Fonti:</p>
+<blockquote>
+<p><a href="http://it-ovid.blogspot.se/2012/05/nmap-routedstnetlink-cant-find.html">it-ovid</a></p>
+<p><a href="http://nmap.org/book/man.html">nmap.org</a></p>
+<p><a href="http://www.unix.com/shell-programming-and-scripting/24289-need-attach-txt-file-while-sending-mail.html">unix.com</a></p>
+</blockquote>
+<p>Happy Hacking &amp; stay TuNeD</p>
+
+    <h4>Qualcosa di simile</h4>
+    <ul>
+        <p>Wed 20 August 2014 <a href="https://www.j0llyb0x.org/2014/remote-weechat-notification-via-urxvt-tmux.html">remote weechat notification via urxvt & tmux</a></p>
+    </ul>
+
+    <div class="comments">
+        <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'j0llyshares';
+                var disqus_identifier = '2014/find-open-proxy.html';
+                var disqus_url = 'https://www.j0llyb0x.org/2014/find-open-proxy.html';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+        <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+        
+    </div>
+        <!-- /Content --> 
+
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="https://www.j0llyb0x.org/archives.html">Archives</a></li>
+                            <li><a href="https://www.j0llyb0x.org/tags.html">Tags</a></li>
+                            <li><a href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Social</div>
+                        <ul class="list-unstyled">
+                            <li><a href="http://github.com/j0lly" target="_blank">Github</a></li>
+                            <li><a href="https://it.linkedin.com/pub/josè-ferraris/4a/a32/384" target="_blank">Linkedin</a></li>
+                            <li><a href="#" target="_blank">Instagram</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Links</div>
+                        <ul class="list-unstyled">
+                            <li><a href="https://packetstormsecurity.com/" target="_blank">Packestorm</a></li>
+                            <li><a href="https://www.archlinux.org/" target="_blank">Archlinux</a></li>
+                        </ul>
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; j0llyb0x.org 2011-2015</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
+</html>
