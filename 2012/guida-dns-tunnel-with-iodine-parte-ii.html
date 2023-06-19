@@ -1,122 +1,112 @@
 <!DOCTYPE html>
-<html lang="it">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Se non sapete cos&#39;è un DNS o un tunnel, leggetevi l&#39;articolo introduttivo sul DNS tunneling. Prima di tutto presentiamo Iodine: This is a piece of software that lets you tunnel IPv4 data through a...">
-        <meta name="keywords" content="dns, hacking, iodine">
-        <link rel="icon" href="https://www.j0llyb0x.org/favicon.ico">
+<html lang="it" prefix="og: http://ogp.me/ns#">
+	<head>
+		<link href="http://gmpg.org/xfn/11" rel="profile">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-        <title>[GUIDA] DNS Tunnel with Iodine PARTE II - j0llyb0x</title>
+		<!-- Metadata -->
+	<meta name="description" content="Sono Josè, un Systems Engineer appassionato di informatica ed altre cose più o meno adrenaliniche... Cerco ogni giorno di imparare e trasmettere quello che sò ">
+	<meta property="og:description" content="Sono Josè, un Systems Engineer appassionato di informatica ed altre cose più o meno adrenaliniche... Cerco ogni giorno di imparare e trasmettere quello che sò ">
+	<meta property="og:title" content="[GUIDA] DNS Tunnel with Iodine PARTE II" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="https://www.j0llyb0x.org/2012/guida-dns-tunnel-with-iodine-parte-ii.html" />
+		<meta property="og:image" content="https://www.j0llyb0x.org/images/logo-color.png" />
 
-        <!-- Stylesheets -->
-        <link href="https://www.j0llyb0x.org/theme/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://www.j0llyb0x.org/theme/css/fonts.css" rel="stylesheet">
-        <link href="https://www.j0llyb0x.org/theme/css/nest.css" rel="stylesheet">
-        <link href="https://www.j0llyb0x.org/theme/css/pygment.css" rel="stylesheet">
-        <!-- /Stylesheets -->
+		<!-- Enable responsiveness on mobile devices-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
-        <!-- RSS Feeds -->
-        <link href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Full Atom Feed" />
-        <link href="https://www.j0llyb0x.org/feeds/{slug}.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Categories Atom Feed" />
-        <!-- /RSS Feeds -->
+		<title>j0llyb0x - Learn or die trying</title>
 
-        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
+		<!-- CSS -->
+		<link href="//fonts.googleapis.com/" rel="dns-prefetch">
+		<link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Abril+Fatface|PT+Sans:400,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet">
 
-        <!-- Google Analytics -->
-        <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/poole.css" />
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/hyde.css" />
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/syntax.css" />
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.1.7/css/fork-awesome.min.css" crossorigin="anonymous">
 
-          ga('create', 'UA-18259053-2', 'auto');
-          ga('send', 'pageview');
-        </script>
-        <!-- /Google Analytics -->
+		<!-- Feeds -->
+<link href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Full Atom Feed" />
+<link href="https://www.j0llyb0x.org/feeds/hacking.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Categories Atom Feed" />
 
+		<!-- Analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-18259053-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    </head>
+  gtag('config', 'UA-18259053-2');
+</script>
+	</head>
 
-    <body>
+	<body class="theme-base-0b">
+<div class="sidebar">
+	<div class="container sidebar-sticky">
+		<div class="sidebar-about">
 
-        <!-- Header -->
-    <div class="header-container gradient">
-
-            <!-- Static navbar -->
-            <div class="container">
-                <div class="header-nav">
-                    <div class="header-logo">
-                        <a class="pull-left" href="https://www.j0llyb0x.org/"><img class="mr20" src="https://www.j0llyb0x.org/images/logo.png" alt="logo"></a>
-                    </div>
-                    <div class="nav pull-right">
-                                <a href="https://www.j0llyb0x.org/">Homepage</a>
-                                <a href="https://www.j0llyb0x.org/categories.html">Categories</a>
-                    </div>
-                </div>
-            </div>
-            <!-- /Static navbar -->
-
-            <!-- Header -->
-    <!-- Header -->
-    <div class="container header-wrapper">
-        <div class="row">
-              <div class="col-lg-12">
-                  <div class="header-content">
-                      <h1 class="header-title">[GUIDA] DNS Tunnel with Iodine PARTE II</h1>
-                      <p class="header-date">By <a href="https://www.j0llyb0x.org/author/j0lly.html">j0lly</a>, Sun 15 January 2012, in category <a href="https://www.j0llyb0x.org/category/hacking.html">Hacking</a></p>
-                      <div class="header-underline"></div>
-                      <div class="clearfix"></div>
-                      <p class="pull-right header-tags">
-                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
-<a href="https://www.j0llyb0x.org/tag/dns.html">dns</a>, <a href="https://www.j0llyb0x.org/tag/hacking.html">hacking</a>, <a href="https://www.j0llyb0x.org/tag/iodine.html">iodine</a>                      </p>
-                  </div>
-              </div>
-        </div>
-    </div>
-    <!-- /Header -->
-            <!-- /Header -->
-
-        </div>
-        <!-- /Header -->
-
-
-        <!-- Content -->
-    <div class="container content">
-        <p>Se non sapete cos'è un DNS o un tunnel, leggetevi <a href="http://j0llyb0x.org/intro-dns-tunnel-con-iodine-01-2012/">l'articolo</a> introduttivo sul DNS tunneling.</p>
+			<h1>
+				<a href="/">
+					<img class="profile-picture" src="https://www.j0llyb0x.org/images/logo-color.png">
+					j0llyb0x
+				</a>
+			</h1>
+			<p class="lead"></p>
+			<p class="lead">Sono Josè, un Systems Engineer appassionato di informatica ed altre cose più o meno adrenaliniche... Cerco ogni giorno di imparare e trasmettere quello che sò  </p>
+			<p></p>
+		</div>
+			<ul class="sidebar-nav">
+					<li><a href="/categories.html">Categories</a></li>
+					<li><a href="/archives.html">All Articles</a></li>
+			</ul>
+		<nav class="sidebar-social">
+					<a class="sidebar-social-item" href="mailto:jos.ferraris@gmail.com">
+						<i class="fa fa-envelope"></i>
+					</a>
+					<a class="sidebar-social-item" href="https://github.com/j0lly" target="_blank">
+						<i class="fa fa-github"></i>
+					</a>
+					<a class="sidebar-social-item" href="https://www.linkedin.com/in/joseferraris/" target="_blank">
+						<i class="fa fa-linkedin"></i>
+					</a>
+			<a class="sidebar-social-item" href="https://www.j0llyb0x.org/feeds/all.atom.xml">
+				<i class="fa fa-rss"></i>
+			</a>
+		</nav>
+			<p class="sidebar-footer">&copy; j0llyb0x.org 2011-2015</p>
+	</div>
+</div>		<div class="content container">
+<div class="post">
+	<h1 class="post-title">[GUIDA] DNS Tunnel with Iodine PARTE II</h1>
+	<span class="post-date">Sun 15 January 2012</span>
+	<p>Se non sapete cos'è un DNS o un tunnel, leggetevi <a href="http://j0llyb0x.org/intro-dns-tunnel-con-iodine-01-2012/">l'articolo</a> introduttivo sul DNS tunneling.</p>
 <p>Prima di tutto presentiamo Iodine:</p>
 <blockquote>
-<div class="highlight"><pre><span></span><span class="n">This</span> <span class="k">is</span> <span class="n">a</span> <span class="n">piece</span> <span class="k">of</span> <span class="n">software</span> <span class="n">that</span> <span class="n">lets</span> <span class="n">you</span> <span class="n">tunnel</span> <span class="n">IPv4</span> <span class="k">data</span> <span class="n">through</span> <span class="n">a</span> <span class="n">DNS</span>
-<span class="n">server</span><span class="p">.</span> <span class="n">This</span> <span class="n">can</span> <span class="n">be</span> <span class="n">usable</span> <span class="k">in</span> <span class="n">different</span> <span class="n">situations</span> <span class="k">where</span> <span class="n">internet</span> <span class="k">access</span> <span class="k">is</span>
-<span class="n">firewalled</span><span class="p">,</span> <span class="n">but</span> <span class="n">DNS</span> <span class="n">queries</span> <span class="k">are</span> <span class="n">allowed</span><span class="p">.</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>This is a piece of software that lets you tunnel IPv4 data through a DNS
+server. This can be usable in different situations where internet access is
+firewalled, but DNS queries are allowed.
+</code></pre></div>
 
 </blockquote>
 <p>Andate nella <a href="http://code.kryo.se/iodine/">homepage</a> e scaricate l'ultima versione, disponibile per praticamente tutti i sistemi operativi!</p>
 <p>Se siete su OSX avete un paio di opzioni; o vi installate una macchina virtuale con <a href="https://www.virtualbox.org/">virtualbox</a>, magari <a href="http://www.backtrack-linux.org/">Back|Track</a> così iodine ve lo trovate già dentro, o vi scaricate Xcode dall'apple store e procedete con un semplice "sudo <em>make &amp; make install</em>", oppure vi installate <a href="https://github.com/mxcl/homebrew">homebrew</a> e lo utilizzate da lì. Queste sono le opzioni che ritengo più comode per avere questo programma in OSX.</p>
 <p>Tenete conto che il programma è formato da due parti, il client e il server; ovviamente dovete avere un computer con un Iodine server in attesa di una connessione, come ne ho parlato nel post precedente.</p>
 <p>I comandi per lanciare il server (Iodined) sono:</p>
-<div class="highlight"><pre><span></span><span class="n">iodined</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span> <span class="n">x</span><span class="p">.</span><span class="n">miodominio</span><span class="p">.</span><span class="n">com</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>iodined 10.0.0.1 x.miodominio.com
+</code></pre></div>
 
 <p>L'ip è la maschera che darete alla vostra rete virtuale (o tunnel), mentre il dominio è quello fittizio al quale il server è stato delegato (x.yourdomain.org).</p>
 <p>P.S. è necessario possedere i permessi di amministratore per gestire iodine;</p>
 <p>P.P.S Sul server (linux) dovrete anche settare l'ip forwarding se volete usare un tunnel ssh direttamente dalla stessa macchina dove gira Iodined; da root digitate:</p>
-<div class="highlight"><pre><span></span><span class="n">echo</span> <span class="ss">&quot;1&quot;</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">proc</span><span class="o">/</span><span class="n">net</span><span class="o">/</span><span class="n">ipv4</span><span class="o">/</span><span class="n">ip_forward</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>echo &quot;1&quot; &gt; /sys/proc/net/ipv4/ip_forward
+</code></pre></div>
 
 <p>Ora non vi resta che lanciare il client dalla macchina dalla quale volete instaurare il tunnel <em>et voilà</em>, tunnel servito!</p>
-<div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">iodine</span> <span class="n">ipserveriodined</span>  <span class="n">a</span><span class="p">.</span><span class="n">miodominio</span><span class="p">.</span><span class="n">com</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sudo iodine ipserveriodined  a.miodominio.com
+</code></pre></div>
 
 <p>Ora, tutto questo procedimento risulterebbe inutile se la rete fosse patchata, quindi è sempre buona norma darsi conto di che tipo di rete abbiamo di fronte. Le possibilità sono pressappoco tre:</p>
 <ol>
@@ -144,9 +134,8 @@
 </li>
 </ul>
 <p>Quindi, per concludere le operazioni, il comando ssh per instaurare un "tunnel nel tunnel" è:</p>
-<div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="o">-</span><span class="n">fN</span> <span class="o">-</span><span class="n">CD</span> <span class="n">xxxx</span> <span class="n">username</span><span class="mf">@10.0.0.1</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="n">ssh</span><span class="w"> </span><span class="o">-</span><span class="n">fN</span><span class="w"> </span><span class="o">-</span><span class="n">CD</span><span class="w"> </span><span class="n">xxxx</span><span class="w"> </span><span class="n">username</span><span class="mf">@10.0.0.1</span>
+</code></pre></div>
 
 <p>I comandi stanno a significare che ssh deve andare in background (-f) anche senza comandi (-N) e deve instaurare una connessione compressa (-C) e fare un bind (-D) sulla porta locale xxxx (scegliete una porta non standard, magari alta come una 64000 o giù di lì).</p>
 <p>Ecco fatto, ora settate per bene il proxy sul vostro browser con la porta da voi scelta ed avrete una navigazione criptata e free, provare per credere!</p>
@@ -165,67 +154,27 @@
 <p><a href="http://dev.kryo.se/iodine/wiki/HowtoSetup">kryo.se</a></p>
 </blockquote>
 
-    <h4>Qualcosa di simile</h4>
-    <ul>
-        <p>Thu 19 June 2014 <a href="https://www.j0llyb0x.org/2014/parte-ii-dns-questo-sconosciuto-configurazione-di-un-master-autoritativo-puro.html">[parte II] DNS, questo sconosciuto.. Configurazione di un Master autoritativo puro</a></p>
-        <p>Tue 17 June 2014 <a href="https://www.j0llyb0x.org/2014/parte-i-dns-questo-sconosciuto.html">[parte I] DNS, questo sconosciuto..</a></p>
-    </ul>
+		<span class="post-tags">
+			Tags:
+			<ul>
+					<li><a href="https://www.j0llyb0x.org/tag/iodine.html">iodine</a></li>
+					<li><a href="https://www.j0llyb0x.org/tag/dns.html">dns</a></li>
+					<li><a href="https://www.j0llyb0x.org/tag/hacking.html">hacking</a></li>
+			</ul>
+		</span>
 
-    <div class="comments">
-        <div id="disqus_thread"></div>
-            <script type="text/javascript">
-                var disqus_shortname = 'j0llyshares';
-                var disqus_identifier = '2012/guida-dns-tunnel-with-iodine-parte-ii.html';
-                var disqus_url = 'https://www.j0llyb0x.org/2012/guida-dns-tunnel-with-iodine-parte-ii.html';
-                (function() {
-                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-                })();
-            </script>
-        <noscript>Please enable JavaScript to view the comments.</noscript>
-    </div>
-        
-    </div>
-        <!-- /Content --> 
-
-        <!-- Footer -->
-        <div class="footer gradient-2">
-            <div class="container footer-container ">
-                <div class="row">
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Sitemap</div>
-                        <ul class="list-unstyled">
-                            <li><a href="https://www.j0llyb0x.org/archives.html">Archives</a></li>
-                            <li><a href="https://www.j0llyb0x.org/tags.html">Tags</a></li>
-                            <li><a href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Social</div>
-                        <ul class="list-unstyled">
-                            <li><a href="http://github.com/j0lly" target="_blank">Github</a></li>
-                            <li><a href="https://it.linkedin.com/pub/josè-ferraris/4a/a32/384" target="_blank">Linkedin</a></li>
-                            <li><a href="#" target="_blank">Instagram</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Links</div>
-                        <ul class="list-unstyled">
-                            <li><a href="https://packetstormsecurity.com/" target="_blank">Packestorm</a></li>
-                            <li><a href="https://www.archlinux.org/" target="_blank">Archlinux</a></li>
-                        </ul>
-                    </div> 
-                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                        <p class="pull-right text-right">
-                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
-                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
-                            <small>&copy; j0llyb0x.org 2011-2015</small>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /Footer -->
-    </body>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+	var disqus_shortname = 'j0llyshares';
+	(function() {
+		var d = document, s = d.createElement('script'); s.type = 'text/javascript'; s.async = true;
+		s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+		</div>
+	</body>
 </html>

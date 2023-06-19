@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="it" prefix="og: http://ogp.me/ns#">
+	<head>
+		<link href="http://gmpg.org/xfn/11" rel="profile">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+		<!-- Metadata -->
+			<meta name="description" content="Sono Josè, un Systems Engineer appassionato di informatica ed altre cose più o meno adrenaliniche... Cerco ogni giorno di imparare e trasmettere quello che sò " />
+			<meta property="og:description" content="Sono Josè, un Systems Engineer appassionato di informatica ed altre cose più o meno adrenaliniche... Cerco ogni giorno di imparare e trasmettere quello che sò " />
+			<meta property="og:title" content="j0llyb0x - Learn or die trying" />
+			<meta property="og:type" content="website" />
+			<meta property="og:url" content="https://www.j0llyb0x.org" />
+		<meta property="og:image" content="https://www.j0llyb0x.org/images/logo-color.png" />
+
+		<!-- Enable responsiveness on mobile devices-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+		<title>j0llyb0x - Learn or die trying</title>
+
+		<!-- CSS -->
+		<link href="//fonts.googleapis.com/" rel="dns-prefetch">
+		<link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Abril+Fatface|PT+Sans:400,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet">
+
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/poole.css" />
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/hyde.css" />
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/syntax.css" />
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.1.7/css/fork-awesome.min.css" crossorigin="anonymous">
+
+		<!-- Feeds -->
+<link href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Full Atom Feed" />
+
+		<!-- Analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-18259053-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-18259053-2');
+</script>
+	</head>
+
+	<body class="theme-base-0b">
+<div class="sidebar">
+	<div class="container sidebar-sticky">
+		<div class="sidebar-about">
+
+			<h1>
+				<a href="/">
+					<img class="profile-picture" src="https://www.j0llyb0x.org/images/logo-color.png">
+					j0llyb0x
+				</a>
+			</h1>
+			<p class="lead"></p>
+			<p class="lead">Sono Josè, un Systems Engineer appassionato di informatica ed altre cose più o meno adrenaliniche... Cerco ogni giorno di imparare e trasmettere quello che sò  </p>
+			<p></p>
+		</div>
+			<ul class="sidebar-nav">
+					<li><a href="/categories.html">Categories</a></li>
+					<li><a href="/archives.html">All Articles</a></li>
+			</ul>
+		<nav class="sidebar-social">
+					<a class="sidebar-social-item" href="mailto:jos.ferraris@gmail.com">
+						<i class="fa fa-envelope"></i>
+					</a>
+					<a class="sidebar-social-item" href="https://github.com/j0lly" target="_blank">
+						<i class="fa fa-github"></i>
+					</a>
+					<a class="sidebar-social-item" href="https://www.linkedin.com/in/joseferraris/" target="_blank">
+						<i class="fa fa-linkedin"></i>
+					</a>
+			<a class="sidebar-social-item" href="https://www.j0llyb0x.org/feeds/all.atom.xml">
+				<i class="fa fa-rss"></i>
+			</a>
+		</nav>
+			<p class="sidebar-footer">&copy; j0llyb0x.org 2011-2015</p>
+	</div>
+</div>		<div class="content container">
+	<div class="posts">
+			<div class="post">
+				<h1 class="post-title" href="https://www.j0llyb0x.org/2013/guida-bcache-luks-e-btrfs-archlinux-on-steroids-parte-ii.html">
+					<a href="https://www.j0llyb0x.org/2013/guida-bcache-luks-e-btrfs-archlinux-on-steroids-parte-ii.html">[GUIDA] Bcache, luks e btrfs: Archlinux on steroids [parte II]</a>
+				</h1>
+				<span class="post-date">Sat 15 June 2013</span>
+					<span class="post-tags">
+						Tags:
+						<ul>
+								<li><a href="https://www.j0llyb0x.org/tag/archlinux.html">archlinux</a></li>
+								<li><a href="https://www.j0llyb0x.org/tag/bcache.html">bcache</a></li>
+								<li><a href="https://www.j0llyb0x.org/tag/kernel.html">kernel</a></li>
+								<li><a href="https://www.j0llyb0x.org/tag/internals.html">internals</a></li>
+						</ul>
+					</span>
+				<p>
+					<p>Ed eccoci per la seconda parte di questa guida, dove tratterò l'installazione Arch con BTRFS, l'aggiunta del caching device ed l'affinamento dell'installazione. La parte su Bcache &amp; crittografia del disco la trovate nella <a href="http://j0llyb0x.org/bcache-luks-e-btrfs-linux-on-steroids-06-2013/">prima parte della guida</a>.</p>
+<p><img alt="bcache" src="https://www.j0llyb0x.org/images/bcache-2.png"></p>
+<p>I link alle guide:</p>
+<ul>
+<li><a href="https://wiki.archlinux.org/index.php/Installing_on_Btrfs_root">https://wiki.archlinux.org/index.php/Installing_on_Btrfs_root</a> </li>
+<li><a href="https://wiki.archlinux.org/index.php/Bcache">https://wiki.archlinux …</a></li></ul>
+				</p>
+				<a class="read-more" href="2013/guida-bcache-luks-e-btrfs-archlinux-on-steroids-parte-ii.html">Continue reading »</a>
+			</div>
+			<div class="post">
+				<h1 class="post-title" href="https://www.j0llyb0x.org/2013/guida-bcache-luks-e-btrfs-archlinux-on-steroids-parte-i.html">
+					<a href="https://www.j0llyb0x.org/2013/guida-bcache-luks-e-btrfs-archlinux-on-steroids-parte-i.html">[GUIDA] Bcache, luks e btrfs: Archlinux on steroids [parte I]</a>
+				</h1>
+				<span class="post-date">Fri 14 June 2013</span>
+					<span class="post-tags">
+						Tags:
+						<ul>
+								<li><a href="https://www.j0llyb0x.org/tag/archlinux.html">archlinux</a></li>
+								<li><a href="https://www.j0llyb0x.org/tag/bcache.html">bcache</a></li>
+								<li><a href="https://www.j0llyb0x.org/tag/kernel.html">kernel</a></li>
+								<li><a href="https://www.j0llyb0x.org/tag/internals.html">internals</a></li>
+						</ul>
+					</span>
+				<p>
+					<p>Per inaugurare il ritorno ad Archlinux, ho deciso di scrivere un articolo sulla mia attuale installazione! Ho deciso di scrivere questa guida per chiunque voglia cimentarsi con il nuovissimo modulo Kernel (che sarà ufficialmente supportato solo dalla versione 3.10) bcache, che introduce il caching dinamico di un hard disk …</p>
+				</p>
+				<a class="read-more" href="2013/guida-bcache-luks-e-btrfs-archlinux-on-steroids-parte-i.html">Continue reading »</a>
+			</div>
+			<div class="post">
+				<h1 class="post-title" href="https://www.j0llyb0x.org/2013/export-mysql-database-structure-without-data.html">
+					<a href="https://www.j0llyb0x.org/2013/export-mysql-database-structure-without-data.html">Export Mysql Database Structure Without Data</a>
+				</h1>
+				<span class="post-date">Sat 19 January 2013</span>
+					<span class="post-tags">
+						Tags:
+						<ul>
+								<li><a href="https://www.j0llyb0x.org/tag/mysql.html">mysql</a></li>
+						</ul>
+					</span>
+				<p>
+					<p>Sometimes you can get in need of your favourite Database clone, but you do not need all the garbage of your 3 years old data.</p>
+<p><img alt="mysql" src="https://www.j0llyb0x.org/images/mysql-1.gif"></p>
+<p>Well, a part for a Looong DBMS constructs to cancel every peace of data from your tables, you can simply dump your DB with the …</p>
+				</p>
+				<a class="read-more" href="2013/export-mysql-database-structure-without-data.html">Continue reading »</a>
+			</div>
+	</div>
+	<div class="pagination">
+
+		<span class="pagination-item older"><a href="https://www.j0llyb0x.org/index4.html">Newer</a></span>
+
+		<span class="pagination-item newer"><a href="https://www.j0llyb0x.org/index6.html">Older</a></span>
+	</div>
+		</div>
+	</body>
+</html>

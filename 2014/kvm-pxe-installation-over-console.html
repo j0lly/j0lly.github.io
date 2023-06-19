@@ -1,94 +1,88 @@
 <!DOCTYPE html>
-<html lang="it">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Questo articolo vuole essere una prima bozza che raccogliesse i passaggi compiuti per arrivare all&#39;automazione di installazioni Centos (a breve debian e qualche opzione supplementare di...">
-        <meta name="keywords" content="console, kvm, libvirt">
-        <link rel="icon" href="https://www.j0llyb0x.org/favicon.ico">
+<html lang="it" prefix="og: http://ogp.me/ns#">
+	<head>
+		<link href="http://gmpg.org/xfn/11" rel="profile">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-        <title>[kvm] pxe installation over console - j0llyb0x</title>
+		<!-- Metadata -->
+	<meta name="description" content="Sono Josè, un Systems Engineer appassionato di informatica ed altre cose più o meno adrenaliniche... Cerco ogni giorno di imparare e trasmettere quello che sò ">
+	<meta property="og:description" content="Sono Josè, un Systems Engineer appassionato di informatica ed altre cose più o meno adrenaliniche... Cerco ogni giorno di imparare e trasmettere quello che sò ">
+	<meta property="og:title" content="[kvm] pxe installation over console" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="https://www.j0llyb0x.org/2014/kvm-pxe-installation-over-console.html" />
+		<meta property="og:image" content="https://www.j0llyb0x.org/images/logo-color.png" />
 
-        <!-- Stylesheets -->
-        <link href="https://www.j0llyb0x.org/theme/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://www.j0llyb0x.org/theme/css/fonts.css" rel="stylesheet">
-        <link href="https://www.j0llyb0x.org/theme/css/nest.css" rel="stylesheet">
-        <link href="https://www.j0llyb0x.org/theme/css/pygment.css" rel="stylesheet">
-        <!-- /Stylesheets -->
+		<!-- Enable responsiveness on mobile devices-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
-        <!-- RSS Feeds -->
-        <link href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Full Atom Feed" />
-        <link href="https://www.j0llyb0x.org/feeds/{slug}.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Categories Atom Feed" />
-        <!-- /RSS Feeds -->
+		<title>j0llyb0x - Learn or die trying</title>
 
-        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
+		<!-- CSS -->
+		<link href="//fonts.googleapis.com/" rel="dns-prefetch">
+		<link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Abril+Fatface|PT+Sans:400,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet">
 
-        <!-- Google Analytics -->
-        <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/poole.css" />
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/hyde.css" />
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/syntax.css" />
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.1.7/css/fork-awesome.min.css" crossorigin="anonymous">
 
-          ga('create', 'UA-18259053-2', 'auto');
-          ga('send', 'pageview');
-        </script>
-        <!-- /Google Analytics -->
+		<!-- Feeds -->
+<link href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Full Atom Feed" />
+<link href="https://www.j0llyb0x.org/feeds/sysadmin.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Categories Atom Feed" />
 
+		<!-- Analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-18259053-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    </head>
+  gtag('config', 'UA-18259053-2');
+</script>
+	</head>
 
-    <body>
+	<body class="theme-base-0b">
+<div class="sidebar">
+	<div class="container sidebar-sticky">
+		<div class="sidebar-about">
 
-        <!-- Header -->
-    <div class="header-container gradient">
-
-            <!-- Static navbar -->
-            <div class="container">
-                <div class="header-nav">
-                    <div class="header-logo">
-                        <a class="pull-left" href="https://www.j0llyb0x.org/"><img class="mr20" src="https://www.j0llyb0x.org/images/logo.png" alt="logo"></a>
-                    </div>
-                    <div class="nav pull-right">
-                                <a href="https://www.j0llyb0x.org/">Homepage</a>
-                                <a href="https://www.j0llyb0x.org/categories.html">Categories</a>
-                    </div>
-                </div>
-            </div>
-            <!-- /Static navbar -->
-
-            <!-- Header -->
-    <!-- Header -->
-    <div class="container header-wrapper">
-        <div class="row">
-              <div class="col-lg-12">
-                  <div class="header-content">
-                      <h1 class="header-title">[kvm] pxe installation over console</h1>
-                      <p class="header-date">By <a href="https://www.j0llyb0x.org/author/j0lly.html">j0lly</a>, Tue 19 August 2014, in category <a href="https://www.j0llyb0x.org/category/sysadmin.html">Sysadmin</a></p>
-                      <div class="header-underline"></div>
-                      <div class="clearfix"></div>
-                      <p class="pull-right header-tags">
-                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
-<a href="https://www.j0llyb0x.org/tag/console.html">console</a>, <a href="https://www.j0llyb0x.org/tag/kvm.html">kvm</a>, <a href="https://www.j0llyb0x.org/tag/libvirt.html">libvirt</a>                      </p>
-                  </div>
-              </div>
-        </div>
-    </div>
-    <!-- /Header -->
-            <!-- /Header -->
-
-        </div>
-        <!-- /Header -->
-
-
-        <!-- Content -->
-    <div class="container content">
-        <p>Questo articolo vuole essere una prima bozza che raccogliesse i passaggi compiuti per arrivare all'automazione di installazioni Centos (a breve debian e qualche opzione supplementare di installazione). </p>
+			<h1>
+				<a href="/">
+					<img class="profile-picture" src="https://www.j0llyb0x.org/images/logo-color.png">
+					j0llyb0x
+				</a>
+			</h1>
+			<p class="lead"></p>
+			<p class="lead">Sono Josè, un Systems Engineer appassionato di informatica ed altre cose più o meno adrenaliniche... Cerco ogni giorno di imparare e trasmettere quello che sò  </p>
+			<p></p>
+		</div>
+			<ul class="sidebar-nav">
+					<li><a href="/categories.html">Categories</a></li>
+					<li><a href="/archives.html">All Articles</a></li>
+			</ul>
+		<nav class="sidebar-social">
+					<a class="sidebar-social-item" href="mailto:jos.ferraris@gmail.com">
+						<i class="fa fa-envelope"></i>
+					</a>
+					<a class="sidebar-social-item" href="https://github.com/j0lly" target="_blank">
+						<i class="fa fa-github"></i>
+					</a>
+					<a class="sidebar-social-item" href="https://www.linkedin.com/in/joseferraris/" target="_blank">
+						<i class="fa fa-linkedin"></i>
+					</a>
+			<a class="sidebar-social-item" href="https://www.j0llyb0x.org/feeds/all.atom.xml">
+				<i class="fa fa-rss"></i>
+			</a>
+		</nav>
+			<p class="sidebar-footer">&copy; j0llyb0x.org 2011-2015</p>
+	</div>
+</div>		<div class="content container">
+<div class="post">
+	<h1 class="post-title">[kvm] pxe installation over console</h1>
+	<span class="post-date">Tue 19 August 2014</span>
+	<p>Questo articolo vuole essere una prima bozza che raccogliesse i passaggi compiuti per arrivare all'automazione di installazioni Centos (a breve debian e qualche opzione supplementare di installazione). </p>
 <p><img alt="kvm" src="https://www.j0llyb0x.org/images/kvm-1.jpg"></p>
 <p>i prerequisiti, non trattati in questa sede:</p>
 <ul>
@@ -106,85 +100,80 @@
 </ul>
 <p>Ovviamente sono passato da varie fasi di affinamento ed è per questo che spero di evirare qualche grattacapo a voi.</p>
 <p>Per prima cosa, è indispensabile modificare il network utilizzato; io ho utilizzato quello di default perché virt-manager lo utilizza per le nuove installazioni, ma questo non è così importante quindi scegliete voi il network che preferite.</p>
-<div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="nv">network</span><span class="o">&gt;</span>
- <span class="o">&lt;</span><span class="nv">name</span><span class="o">&gt;</span><span class="nv">default</span><span class="o">&lt;/</span><span class="nv">name</span><span class="o">&gt;</span>
-  <span class="o">&lt;</span><span class="nv">uuid</span><span class="o">&gt;</span><span class="nv">xxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span><span class="o">&lt;/</span><span class="nv">uuid</span><span class="o">&gt;</span>
-  <span class="o">&lt;</span><span class="nv">forward</span> <span class="nv">mode</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">nat</span><span class="s1">&#39;</span><span class="o">&gt;</span>
-   <span class="o">&lt;</span><span class="nv">nat</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="nv">port</span> <span class="nv">start</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">1024</span><span class="s1">&#39;</span> <span class="k">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">65535</span><span class="s1">&#39;</span><span class="o">/&gt;</span>
-   <span class="o">&lt;/</span><span class="nv">nat</span><span class="o">&gt;</span>
-  <span class="o">&lt;/</span><span class="nv">forward</span><span class="o">&gt;</span>
-  <span class="o">&lt;</span><span class="nv">bridge</span> <span class="nv">name</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">virbr0</span><span class="s1">&#39;</span> <span class="nv">stp</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">on</span><span class="s1">&#39;</span> <span class="nv">delay</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">0</span><span class="s1">&#39;</span><span class="o">/&gt;</span>
-  <span class="o">&lt;</span><span class="nv">mac</span> <span class="nv">address</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">52:54:00:d1:f9:75</span><span class="s1">&#39;</span><span class="o">/&gt;</span>
-  <span class="o">&lt;</span><span class="nv">dns</span><span class="o">&gt;</span>
-   <span class="o">&lt;</span><span class="nv">forwarder</span> <span class="nv">addr</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">8.8.8.8</span><span class="s1">&#39;</span><span class="o">/&gt;</span>
-   <span class="o">&lt;</span><span class="nv">host</span> <span class="nv">ip</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">192.168.122.1</span><span class="s1">&#39;</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="nv">hostname</span><span class="o">&gt;</span><span class="nv">meh</span><span class="o">&lt;/</span><span class="nv">hostname</span><span class="o">&gt;</span>
-   <span class="o">&lt;/</span><span class="nv">host</span><span class="o">&gt;</span>
-  <span class="o">&lt;/</span><span class="nv">dns</span><span class="o">&gt;</span>
-  <span class="o">&lt;</span><span class="nv">ip</span> <span class="nv">address</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">192.168.122.1</span><span class="s1">&#39;</span> <span class="nv">netmask</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">255.255.255.0</span><span class="s1">&#39;</span><span class="o">&gt;</span>
-   <span class="o">&lt;</span><span class="nv">dhcp</span><span class="o">&gt;</span>
-   <span class="o">&lt;</span><span class="nv">range</span> <span class="nv">start</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">192.168.122.2</span><span class="s1">&#39;</span> <span class="k">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">192.168.122.20</span><span class="s1">&#39;</span><span class="o">/&gt;</span>
-   <span class="o">&lt;</span><span class="nv">host</span> <span class="nv">mac</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">52:54:00:92:c7:98</span><span class="s1">&#39;</span> <span class="nv">name</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">mysql01.cluster.io</span><span class="s1">&#39;</span> <span class="nv">ip</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">192.168.122.51</span><span class="s1">&#39;</span><span class="o">/&gt;</span>
-   <span class="o">&lt;</span><span class="nv">host</span> <span class="nv">mac</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">52:54:00:3e:31:f3</span><span class="s1">&#39;</span> <span class="nv">name</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">mysql02.cluster.io</span><span class="s1">&#39;</span> <span class="nv">ip</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">192.168.122.52</span><span class="s1">&#39;</span><span class="o">/&gt;</span>
-   <span class="o">&lt;</span><span class="nv">host</span> <span class="nv">mac</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">52:54:00:d8:40:7d</span><span class="s1">&#39;</span> <span class="nv">name</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">mysql03.cluster.io</span><span class="s1">&#39;</span> <span class="nv">ip</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">192.168.122.53</span><span class="s1">&#39;</span><span class="o">/&gt;</span>
-   <span class="o">&lt;</span><span class="nv">host</span> <span class="nv">mac</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">52:54:00:74:d8:b4</span><span class="s1">&#39;</span> <span class="nv">name</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">diablo.cluster.io</span><span class="s1">&#39;</span> <span class="nv">ip</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">192.168.122.90</span><span class="s1">&#39;</span><span class="o">/&gt;</span>
-   <span class="o">&lt;</span><span class="nv">host</span> <span class="nv">mac</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">52:54:00:45:72:3c</span><span class="s1">&#39;</span> <span class="nv">name</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">booter.cluster.io</span><span class="s1">&#39;</span> <span class="nv">ip</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">192.168.122.91</span><span class="s1">&#39;</span><span class="o">/&gt;</span>
-   <span class="o">&lt;</span><span class="nv">bootp</span> <span class="nv">file</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">pxelinux.0</span><span class="s1">&#39;</span> <span class="nv">server</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">192.168.122.91</span><span class="s1">&#39;</span><span class="o">/&gt;</span>
-  <span class="o">&lt;/</span><span class="nv">dhcp</span><span class="o">&gt;</span>
- <span class="o">&lt;/</span><span class="nv">ip</span><span class="o">&gt;</span>
-<span class="o">&lt;/</span><span class="nv">network</span><span class="o">&gt;</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;network&gt;</span>
+<span class="w"> </span><span class="nt">&lt;name&gt;</span>default<span class="nt">&lt;/name&gt;</span>
+<span class="w">  </span><span class="nt">&lt;uuid&gt;</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxx<span class="nt">&lt;/uuid&gt;</span>
+<span class="w">  </span><span class="nt">&lt;forward</span><span class="w"> </span><span class="na">mode=</span><span class="s">&#39;nat&#39;</span><span class="nt">&gt;</span>
+<span class="w">   </span><span class="nt">&lt;nat&gt;</span>
+<span class="w">    </span><span class="nt">&lt;port</span><span class="w"> </span><span class="na">start=</span><span class="s">&#39;1024&#39;</span><span class="w"> </span><span class="na">end=</span><span class="s">&#39;65535&#39;</span><span class="nt">/&gt;</span>
+<span class="w">   </span><span class="nt">&lt;/nat&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/forward&gt;</span>
+<span class="w">  </span><span class="nt">&lt;bridge</span><span class="w"> </span><span class="na">name=</span><span class="s">&#39;virbr0&#39;</span><span class="w"> </span><span class="na">stp=</span><span class="s">&#39;on&#39;</span><span class="w"> </span><span class="na">delay=</span><span class="s">&#39;0&#39;</span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;mac</span><span class="w"> </span><span class="na">address=</span><span class="s">&#39;52:54:00:d1:f9:75&#39;</span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;dns&gt;</span>
+<span class="w">   </span><span class="nt">&lt;forwarder</span><span class="w"> </span><span class="na">addr=</span><span class="s">&#39;8.8.8.8&#39;</span><span class="nt">/&gt;</span>
+<span class="w">   </span><span class="nt">&lt;host</span><span class="w"> </span><span class="na">ip=</span><span class="s">&#39;192.168.122.1&#39;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;hostname&gt;</span>meh<span class="nt">&lt;/hostname&gt;</span>
+<span class="w">   </span><span class="nt">&lt;/host&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/dns&gt;</span>
+<span class="w">  </span><span class="nt">&lt;ip</span><span class="w"> </span><span class="na">address=</span><span class="s">&#39;192.168.122.1&#39;</span><span class="w"> </span><span class="na">netmask=</span><span class="s">&#39;255.255.255.0&#39;</span><span class="nt">&gt;</span>
+<span class="w">   </span><span class="nt">&lt;dhcp&gt;</span>
+<span class="w">   </span><span class="nt">&lt;range</span><span class="w"> </span><span class="na">start=</span><span class="s">&#39;192.168.122.2&#39;</span><span class="w"> </span><span class="na">end=</span><span class="s">&#39;192.168.122.20&#39;</span><span class="nt">/&gt;</span>
+<span class="w">   </span><span class="nt">&lt;host</span><span class="w"> </span><span class="na">mac=</span><span class="s">&#39;52:54:00:92:c7:98&#39;</span><span class="w"> </span><span class="na">name=</span><span class="s">&#39;mysql01.cluster.io&#39;</span><span class="w"> </span><span class="na">ip=</span><span class="s">&#39;192.168.122.51&#39;</span><span class="nt">/&gt;</span>
+<span class="w">   </span><span class="nt">&lt;host</span><span class="w"> </span><span class="na">mac=</span><span class="s">&#39;52:54:00:3e:31:f3&#39;</span><span class="w"> </span><span class="na">name=</span><span class="s">&#39;mysql02.cluster.io&#39;</span><span class="w"> </span><span class="na">ip=</span><span class="s">&#39;192.168.122.52&#39;</span><span class="nt">/&gt;</span>
+<span class="w">   </span><span class="nt">&lt;host</span><span class="w"> </span><span class="na">mac=</span><span class="s">&#39;52:54:00:d8:40:7d&#39;</span><span class="w"> </span><span class="na">name=</span><span class="s">&#39;mysql03.cluster.io&#39;</span><span class="w"> </span><span class="na">ip=</span><span class="s">&#39;192.168.122.53&#39;</span><span class="nt">/&gt;</span>
+<span class="w">   </span><span class="nt">&lt;host</span><span class="w"> </span><span class="na">mac=</span><span class="s">&#39;52:54:00:74:d8:b4&#39;</span><span class="w"> </span><span class="na">name=</span><span class="s">&#39;diablo.cluster.io&#39;</span><span class="w"> </span><span class="na">ip=</span><span class="s">&#39;192.168.122.90&#39;</span><span class="nt">/&gt;</span>
+<span class="w">   </span><span class="nt">&lt;host</span><span class="w"> </span><span class="na">mac=</span><span class="s">&#39;52:54:00:45:72:3c&#39;</span><span class="w"> </span><span class="na">name=</span><span class="s">&#39;booter.cluster.io&#39;</span><span class="w"> </span><span class="na">ip=</span><span class="s">&#39;192.168.122.91&#39;</span><span class="nt">/&gt;</span>
+<span class="w">   </span><span class="nt">&lt;bootp</span><span class="w"> </span><span class="na">file=</span><span class="s">&#39;pxelinux.0&#39;</span><span class="w"> </span><span class="na">server=</span><span class="s">&#39;192.168.122.91&#39;</span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/dhcp&gt;</span>
+<span class="w"> </span><span class="nt">&lt;/ip&gt;</span>
+<span class="nt">&lt;/network&gt;</span>
+</code></pre></div>
 
 <p>le parti in rosso sono quelle necessarie per creare un pxe boot server:</p>
 <p>In particolare, l'opzione <bootp /> ha come parametro file il nome del bootloader di rete, posizionato sul server 192.168.122.91.</p>
 <p>Se non si volesse utilizzare un server tftpd esterno, è possibile (e più rapido) specificare l'host come tftpd server, eliminando l'opzione server= ed aggiungendo  <tftp root='/tftpboot'/> come figlio del tag <ip>, allo stesso livello del tag <dhcp>, per intenderci.</p>
 <p>dopo aver apportato questa modifica, è necessario riavviare il network; per fare cioò ricordatevi di spegnere tutte le macchine al suo interno perché, al meno con la mia versione, restartando il network con VM accese dentro, quelle stesse macchine non saranno più raggiungibili via network.</p>
 <p>Dopo aver fatto ciò, basta stoppare il network e startarlo di nuovo:</p>
-<div class="highlight"><pre><span></span><span class="n">virsh</span> <span class="n">net</span><span class="o">-</span><span class="k">destroy</span> <span class="k">default</span>
-<span class="n">virsh</span> <span class="k">start</span> <span class="k">default</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>virsh net-destroy default
+virsh start default
+</code></pre></div>
 
 <p>ora possiamo spostarci sulla VM che ospiterà tutto l'essenziale per l'installazione headless.</p>
 <p>La mia macchina di riferimento è una Centos 6, con 1G Ram e 1Vcpu; sul repository ufficiale è già presente tutto l'occorrente per il pxe booting.</p>
-<div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">install</span> <span class="n">tftp</span><span class="o">-</span><span class="n">server</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>yum install tftp-server
+</code></pre></div>
 
 <p>nella directory /tftpboot sarà ora presente il bootloader pxelinux con i relativi files.</p>
 <p>per configurare il nostro booloader in bodo che ci permetta di scegliere che tipo di installazione fare, è necessario creare una directory all'interno del folder:</p>
-<div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">tftpboot</span><span class="o">/</span><span class="n">pxelinux</span><span class="p">.</span><span class="n">cfg</span><span class="o">/</span><span class="err">{</span><span class="n">centos6</span><span class="p">,</span><span class="n">debian7</span><span class="err">}</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>mkdir -p /tftpboot/pxelinux.cfg/{centos6,debian7}
+</code></pre></div>
 
 <p>all'interno della cartella pxelinux.cfg è necessario anche creare il file di configurazione che pxelinux cercherà come default, con il nome, appunto, default:</p>
-<div class="highlight"><pre><span></span><span class="k">default</span> <span class="n">grml32</span>
-<span class="k">implicit</span> <span class="mi">0</span>
-<span class="n">prompt</span> <span class="mi">1</span>
-<span class="n">timeout</span> <span class="mi">100</span>
-<span class="n">ontimeout</span> <span class="n">localboot</span>
-<span class="n">console</span> <span class="mi">0</span>
-<span class="nb">serial</span> <span class="mi">0</span> <span class="mi">115200</span> <span class="mi">0</span>
-<span class="n">display</span> <span class="n">boot</span><span class="p">.</span><span class="n">msg</span>
-<span class="n">F1</span> <span class="n">boot</span><span class="p">.</span><span class="n">msg</span>
+<div class="highlight"><pre><span></span><code><span class="k">default</span><span class="w"> </span><span class="nx">grml32</span>
+<span class="nx">implicit</span><span class="w"> </span><span class="mi">0</span>
+<span class="nx">prompt</span><span class="w"> </span><span class="mi">1</span>
+<span class="nx">timeout</span><span class="w"> </span><span class="mi">100</span>
+<span class="nx">ontimeout</span><span class="w"> </span><span class="nx">localboot</span>
+<span class="nx">console</span><span class="w"> </span><span class="mi">0</span>
+<span class="nx">serial</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">115200</span><span class="w"> </span><span class="mi">0</span>
+<span class="nx">display</span><span class="w"> </span><span class="nx">boot</span><span class="p">.</span><span class="nx">msg</span>
+<span class="nx">F1</span><span class="w"> </span><span class="nx">boot</span><span class="p">.</span><span class="nx">msg</span>
 
-<span class="n">LABEL</span> <span class="n">centos6</span>
-<span class="n">MENU</span> <span class="n">LABEL</span> <span class="n">CENTOS6</span> <span class="mi">64</span> <span class="nb">bit</span> <span class="p">(</span><span class="n">Minimal</span> <span class="n">Installation</span><span class="p">)</span>
-<span class="n">kernel</span> <span class="n">centos6</span><span class="o">/</span><span class="n">vmlinuz</span>
-<span class="n">append</span> <span class="n">initrd</span><span class="o">=</span><span class="n">centos6</span><span class="o">/</span><span class="n">initrd</span><span class="p">.</span><span class="n">img</span> <span class="n">ks</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mi">192</span><span class="p">.</span><span class="mi">168</span><span class="p">.</span><span class="mi">122</span><span class="p">.</span><span class="mi">91</span><span class="o">/</span><span class="n">ks_centos6</span><span class="p">.</span><span class="n">cfg</span> <span class="n">console</span><span class="o">=</span><span class="n">ttyS0</span><span class="p">,</span><span class="mi">115200</span> <span class="n">earlyprint</span><span class="o">=</span><span class="nb">serial</span><span class="p">,</span><span class="n">ttyS0</span><span class="p">,</span><span class="mi">115200</span>
+<span class="nx">LABEL</span><span class="w"> </span><span class="nx">centos6</span>
+<span class="nx">MENU</span><span class="w"> </span><span class="nx">LABEL</span><span class="w"> </span><span class="nx">CENTOS6</span><span class="w"> </span><span class="mi">64</span><span class="w"> </span><span class="nx">bit</span><span class="w"> </span><span class="p">(</span><span class="nx">Minimal</span><span class="w"> </span><span class="nx">Installation</span><span class="p">)</span>
+<span class="nx">kernel</span><span class="w"> </span><span class="nx">centos6</span><span class="o">/</span><span class="nx">vmlinuz</span>
+<span class="nx">append</span><span class="w"> </span><span class="nx">initrd</span><span class="p">=</span><span class="nx">centos6</span><span class="o">/</span><span class="nx">initrd</span><span class="p">.</span><span class="nx">img</span><span class="w"> </span><span class="nx">ks</span><span class="p">=</span><span class="nx">http</span><span class="p">:</span><span class="c1">//192.168.122.91/ks_centos6.cfg console=ttyS0,115200 earlyprint=serial,ttyS0,115200</span>
 
-<span class="n">LABEL</span> <span class="n">debian</span>
-<span class="n">MENU</span> <span class="n">LABEL</span> <span class="n">DEBIAN</span> <span class="n">AMD64</span> <span class="p">(</span><span class="n">Debian</span> <span class="n">Testing</span><span class="p">)</span>
-<span class="n">kernel</span> <span class="n">debian7</span><span class="o">/</span><span class="n">linux</span>
-<span class="n">append</span> <span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mi">192</span><span class="p">.</span><span class="mi">168</span><span class="p">.</span><span class="mi">122</span><span class="p">.</span><span class="mi">91</span><span class="o">/</span><span class="n">server</span><span class="o">-</span><span class="n">base</span><span class="p">.</span><span class="n">cfg</span> <span class="n">priority</span><span class="o">=</span><span class="n">critical</span> <span class="n">DEBIAN_FRONTEND</span><span class="o">=</span><span class="n">noninteractive</span> <span class="n">install</span> <span class="n">debconf</span><span class="o">/</span><span class="n">priority</span><span class="o">=</span><span class="n">medium</span> <span class="n">debian</span><span class="o">-</span><span class="n">installer</span><span class="o">/</span><span class="n">allow_unauthenticated</span><span class="o">=</span><span class="k">true</span> <span class="n">vga</span><span class="o">=</span><span class="k">true</span> <span class="n">initrd</span><span class="o">=</span><span class="n">debian7</span><span class="o">/</span><span class="n">initrd</span><span class="p">.</span><span class="n">gz</span> <span class="c1">-- console=ttyS0,115200 earlyprint=serial,ttyS0,115200</span>
+<span class="nx">LABEL</span><span class="w"> </span><span class="nx">debian</span>
+<span class="nx">MENU</span><span class="w"> </span><span class="nx">LABEL</span><span class="w"> </span><span class="nx">DEBIAN</span><span class="w"> </span><span class="nx">AMD64</span><span class="w"> </span><span class="p">(</span><span class="nx">Debian</span><span class="w"> </span><span class="nx">Testing</span><span class="p">)</span>
+<span class="nx">kernel</span><span class="w"> </span><span class="nx">debian7</span><span class="o">/</span><span class="nx">linux</span>
+<span class="nx">append</span><span class="w"> </span><span class="nx">url</span><span class="p">=</span><span class="nx">http</span><span class="p">:</span><span class="c1">//192.168.122.91/server-base.cfg priority=critical DEBIAN_FRONTEND=noninteractive install debconf/priority=medium debian-installer/allow_unauthenticated=true vga=true initrd=debian7/initrd.gz -- console=ttyS0,115200 earlyprint=serial,ttyS0,115200</span>
 
-<span class="n">LABEL</span> <span class="n">localboot</span>
-<span class="n">MENU</span> <span class="n">LABEL</span> <span class="n">LOCALBOOT</span>
-<span class="n">localboot</span> <span class="mi">0</span>
-</pre></div>
-
+<span class="nx">LABEL</span><span class="w"> </span><span class="nx">localboot</span>
+<span class="nx">MENU</span><span class="w"> </span><span class="nx">LABEL</span><span class="w"> </span><span class="nx">LOCALBOOT</span>
+<span class="nx">localboot</span><span class="w"> </span><span class="mi">0</span>
+</code></pre></div>
 
 <p>La configurazione prevede un file boot.msg in /tftpboot; un semplice file di test che faccia un print a video delle opzioni da poter utilizzare:</p>
 <p>!!!!!!PXE BOOT MENU!!!!!!!
@@ -195,103 +184,94 @@
 <p>Tra le impostazioni è anche necessario settare una console per la redirezione dell'output, segnate in grassetto. è importante mettere il richiamo al file boot.msg dopo la console, in modo da vederne l'output; alra cosa importante, è quella di settare la stessa velocità di baud tra pxelinux e l'installer kickstart/preseed (non è importante la velocità, dato che stiamo parlando di seriali virtuali :P ).</p>
 <p>come avrete notato, all'interno delle definizioni dei due tipi di installazione sono specificati i file locali dovre trovare kernel ed ramdisk (non dimenticate di copiare i binari nelle cartelle suddette, prendendoli direttamente dai siti delle distro), mentre il file di installazione automatico è reperibile via http. altra considerazione è l'aggiunta ai parametri di boot della console virtuale.
 Per abilitare il tftpd server, è ora necessario modficare le linee del file /etc/xinetd.d/tftp:</p>
-<div class="highlight"><pre><span></span><span class="nv">service</span> <span class="nv">tftp</span>
-{
-<span class="nv">socket_type</span> <span class="o">=</span> <span class="nv">dgram</span>
-<span class="nv">protocol</span> <span class="o">=</span> <span class="nv">udp</span>
-<span class="k">wait</span> <span class="o">=</span> <span class="nv">yes</span>
-<span class="nv">user</span> <span class="o">=</span> <span class="nv">root</span>
-<span class="nv">server</span> <span class="o">=</span> <span class="o">/</span><span class="nv">usr</span><span class="o">/</span><span class="nv">sbin</span><span class="o">/</span><span class="nv">in</span>.<span class="nv">tftpd</span>
-<span class="nv">server_args</span> <span class="o">=</span> <span class="o">-</span><span class="nv">s</span> <span class="o">/</span><span class="nv">tftpboot</span>
-<span class="nv">disable</span> <span class="o">=</span> <span class="nv">no</span>
-<span class="nv">per_source</span> <span class="o">=</span> <span class="mi">11</span>
-<span class="nv">cps</span> <span class="o">=</span> <span class="mi">100</span> <span class="mi">2</span>
-<span class="nv">flags</span> <span class="o">=</span> <span class="nv">IPv4</span>
-}
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="nx">service</span><span class="w"> </span><span class="nx">tftp</span>
+<span class="p">{</span>
+<span class="nx">socket_type</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">dgram</span>
+<span class="nx">protocol</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">udp</span>
+<span class="nx">wait</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">yes</span>
+<span class="nx">user</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">root</span>
+<span class="nx">server</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="o">/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">sbin</span><span class="o">/</span><span class="k">in</span><span class="p">.</span><span class="nx">tftpd</span>
+<span class="nx">server_args</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="o">-</span><span class="nx">s</span><span class="w"> </span><span class="o">/</span><span class="nx">tftpboot</span>
+<span class="nx">disable</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">no</span>
+<span class="nx">per_source</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">11</span>
+<span class="nx">cps</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="mi">2</span>
+<span class="nx">flags</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">IPv4</span>
+<span class="p">}</span>
+</code></pre></div>
 
 <p>le modifiche sono solo 2, come sottolineato.</p>
 <p>Ora un bel:</p>
-<div class="highlight"><pre><span></span><span class="n">kill</span> <span class="o">-</span><span class="n">HUP</span> <span class="err">$</span><span class="p">(</span><span class="n">pidof</span> <span class="n">xinetd</span><span class="p">)</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>kill -HUP $(pidof xinetd)
+</code></pre></div>
 
 <p>oppure</p>
-<div class="highlight"><pre><span></span><span class="n">service</span> <span class="n">xinetd</span> <span class="k">start</span>
+<div class="highlight"><pre><span></span><code>service xinetd start
 
-<span class="n">chkconfig</span> <span class="n">xinetd</span> <span class="k">on</span>
-</pre></div>
-
+chkconfig xinetd on
+</code></pre></div>
 
 <p>ed il nostro tftp server dovrebbe essere in ascolto sulla porta 69 udp:</p>
-<div class="highlight"><pre><span></span><span class="n">netstat</span> <span class="o">-</span><span class="n">nlp</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">xinetd</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>netstat -nlp | grep xinetd
+</code></pre></div>
 
 <p>Per la parte di webserver, ho utilizzato lighttpd, dato che la richiesta di risorse è infima, anche se ho perso qualche minuto per alcune configurazioni di default.</p>
 <p>Ovviamente, potete usare qualsiasi webserver, in grado di servire i files kickstart/preseed e, se l'avete configurato, il repository con i pacchetti da installare.</p>
 <p>Per prima cosa è necessario scaricare il binario dal repo epel, dato che centos non lo mette a disposizione:</p>
-<div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">dl</span><span class="p">.</span><span class="n">fedoraproject</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">pub</span><span class="o">/</span><span class="n">epel</span><span class="o">/</span><span class="mi">6</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">lighttpd</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">4</span><span class="p">.</span><span class="mi">35</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="n">el6</span><span class="p">.</span><span class="n">x86_64</span><span class="p">.</span><span class="n">rpm</span>
-<span class="n">rpm</span> <span class="o">-</span><span class="n">i</span> <span class="n">lighttpd</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">4</span><span class="p">.</span><span class="mi">35</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="n">el6</span><span class="p">.</span><span class="n">x86_64</span><span class="p">.</span><span class="n">rpm</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>wget http://dl.fedoraproject.org/pub/epel/6/x86_64/lighttpd-1.4.35-1.el6.x86_64.rpm
+rpm -i lighttpd-1.4.35-1.el6.x86_64.rpm
+</code></pre></div>
 
 <p>ora, è necessario modificare un paconsole=ttyS0,115200 earlyprint=serial,ttyS0,115200io di parametri, per bindare correttamente il server e per la gestione del directory listing.</p>
-<div class="highlight"><pre><span></span><span class="n">sed</span>  <span class="o">-</span><span class="n">i</span> <span class="o">/</span><span class="n">server</span><span class="p">.</span><span class="n">bind</span><span class="o">/</span><span class="n">s</span><span class="o">/^/#/</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">lighttpd</span><span class="o">/</span><span class="n">lighttpd</span><span class="p">.</span><span class="n">conf</span>
-<span class="n">sed</span>  <span class="o">-</span><span class="n">i</span> <span class="o">/</span><span class="n">dir</span><span class="o">-</span><span class="n">listing</span><span class="p">.</span><span class="n">activate</span><span class="o">/</span><span class="n">s</span><span class="o">/</span><span class="n">disable</span><span class="o">/</span><span class="n">enable</span><span class="o">/</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">lighttpd</span><span class="o">/</span><span class="n">conf</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">dirlisting</span><span class="p">.</span><span class="n">conf</span>
-<span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">lighttpd</span><span class="o">/</span><span class="err">{</span><span class="n">centos6</span><span class="p">,</span><span class="n">debian7</span><span class="err">}</span>
-<span class="n">service</span> <span class="n">lighttpd</span> <span class="k">start</span>
-<span class="n">chkconfig</span> <span class="n">lighttpd</span> <span class="k">on</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="n">sed</span><span class="w">  </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="o">/</span><span class="n">server</span><span class="o">.</span><span class="n">bind</span><span class="o">/</span><span class="n">s</span><span class="o">/^/</span><span class="c1">#/ /etc/lighttpd/lighttpd.conf</span>
+<span class="n">sed</span><span class="w">  </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="o">/</span><span class="n">dir</span><span class="o">-</span><span class="n">listing</span><span class="o">.</span><span class="n">activate</span><span class="o">/</span><span class="n">s</span><span class="o">/</span><span class="n">disable</span><span class="o">/</span><span class="n">enable</span><span class="o">/</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">lighttpd</span><span class="o">/</span><span class="n">conf</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">dirlisting</span><span class="o">.</span><span class="n">conf</span>
+<span class="n">mkdir</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">lighttpd</span><span class="o">/</span><span class="p">{</span><span class="n">centos6</span><span class="p">,</span><span class="n">debian7</span><span class="p">}</span>
+<span class="n">service</span><span class="w"> </span><span class="n">lighttpd</span><span class="w"> </span><span class="n">start</span>
+<span class="n">chkconfig</span><span class="w"> </span><span class="n">lighttpd</span><span class="w"> </span><span class="n">on</span>
+</code></pre></div>
 
 <p>ora, non resta che creare i files kickstart/preseed (al momento ho solo un kickstart funzionante):</p>
 <p>ks_centos6.cfg:</p>
-<div class="highlight"><pre><span></span><span class="cp">#version=DEVEL</span>
+<div class="highlight"><pre><span></span><code><span class="cp">#version=DEVEL</span>
 <span class="n">install</span>
 <span class="cp">#SYSTEM</span>
-<span class="n">url</span> <span class="o">--</span><span class="n">url</span><span class="o">=</span><span class="nl">http</span><span class="p">:</span><span class="c1">//192.168.122.91/cconsole=ttyS0,115200 earlyprint=serial,ttyS0,115200entos6</span>
-<span class="n">lang</span> <span class="n">it_IT</span><span class="p">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
-<span class="n">keyboard</span> <span class="n">it</span>
-<span class="n">network</span> <span class="o">--</span><span class="n">onboot</span> <span class="n">yes</span> <span class="o">--</span><span class="n">device</span> <span class="n">eth0</span> <span class="o">--</span><span class="n">bootproto</span> <span class="n">dhcp</span> <span class="o">--</span><span class="n">ipv6</span> <span class="k">auto</span>
-<span class="n">rootpw</span> <span class="o">--</span><span class="n">iscrypted</span> <span class="n">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span>
-<span class="n">firewall</span> <span class="o">--</span><span class="n">service</span><span class="o">=</span><span class="n">ssh</span>
-<span class="n">authconfig</span> <span class="o">--</span><span class="n">enableshadow</span> <span class="o">--</span><span class="n">passalgo</span><span class="o">=</span><span class="n">sha512</span>
-<span class="n">selinux</span> <span class="o">--</span><span class="n">enforcing</span>
-<span class="n">timezone</span> <span class="o">--</span><span class="n">utc</span> <span class="n">Europe</span><span class="o">/</span><span class="n">Rome</span>
-<span class="n">bootloader</span> <span class="o">--</span><span class="n">location</span><span class="o">=</span><span class="n">mbr</span> <span class="o">--</span><span class="n">driveorder</span><span class="o">=</span><span class="n">vda</span> <span class="o">--</span><span class="n">append</span><span class="o">=</span><span class="s">&quot;crashkernel=auto console=ttyS0,115200 earlyprint=serial,ttyS0,115200&quot;</span>
+<span class="n">url</span><span class="w"> </span><span class="o">--</span><span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="o">:</span><span class="c1">//192.168.122.91/cconsole=ttyS0,115200 earlyprint=serial,ttyS0,115200entos6</span>
+<span class="n">lang</span><span class="w"> </span><span class="n">it_IT</span><span class="p">.</span><span class="n">UTF</span><span class="mi">-8</span>
+<span class="n">keyboard</span><span class="w"> </span><span class="n">it</span>
+<span class="n">network</span><span class="w"> </span><span class="o">--</span><span class="n">onboot</span><span class="w"> </span><span class="n">yes</span><span class="w"> </span><span class="o">--</span><span class="n">device</span><span class="w"> </span><span class="n">eth0</span><span class="w"> </span><span class="o">--</span><span class="n">bootproto</span><span class="w"> </span><span class="n">dhcp</span><span class="w"> </span><span class="o">--</span><span class="n">ipv6</span><span class="w"> </span><span class="k">auto</span>
+<span class="n">rootpw</span><span class="w"> </span><span class="o">--</span><span class="n">iscrypted</span><span class="w"> </span><span class="n">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span>
+<span class="n">firewall</span><span class="w"> </span><span class="o">--</span><span class="n">service</span><span class="o">=</span><span class="n">ssh</span>
+<span class="n">authconfig</span><span class="w"> </span><span class="o">--</span><span class="n">enableshadow</span><span class="w"> </span><span class="o">--</span><span class="n">passalgo</span><span class="o">=</span><span class="n">sha512</span>
+<span class="n">selinux</span><span class="w"> </span><span class="o">--</span><span class="n">enforcing</span>
+<span class="n">timezone</span><span class="w"> </span><span class="o">--</span><span class="n">utc</span><span class="w"> </span><span class="n">Europe</span><span class="o">/</span><span class="n">Rome</span>
+<span class="n">bootloader</span><span class="w"> </span><span class="o">--</span><span class="n">location</span><span class="o">=</span><span class="n">mbr</span><span class="w"> </span><span class="o">--</span><span class="n">driveorder</span><span class="o">=</span><span class="n">vda</span><span class="w"> </span><span class="o">--</span><span class="n">append</span><span class="o">=</span><span class="s">&quot;crashkernel=auto console=ttyS0,115200 earlyprint=serial,ttyS0,115200&quot;</span>
 <span class="n">skipx</span>
 <span class="n">text</span>
 <span class="n">reboot</span>
-<span class="n">services</span> <span class="o">--</span><span class="n">disabled</span> <span class="n">ip6tables</span>
-<span class="n">services</span> <span class="o">--</span><span class="n">enabled</span> <span class="n">ntpd</span>
+<span class="n">services</span><span class="w"> </span><span class="o">--</span><span class="n">disabled</span><span class="w"> </span><span class="n">ip6tables</span>
+<span class="n">services</span><span class="w"> </span><span class="o">--</span><span class="n">enabled</span><span class="w"> </span><span class="n">ntpd</span>
 <span class="n">zerombr</span>
-<span class="n">clearpart</span> <span class="o">--</span><span class="n">initlabel</span> <span class="o">--</span><span class="n">all</span>
+<span class="n">clearpart</span><span class="w"> </span><span class="o">--</span><span class="n">initlabel</span><span class="w"> </span><span class="o">--</span><span class="n">all</span>
 <span class="n">autopart</span>
 
 <span class="cp">#PKGS</span>
-<span class="n">repo</span> <span class="o">--</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;CentOS&quot;</span> <span class="o">--</span><span class="n">baseurl</span><span class="o">=</span><span class="nl">http</span><span class="p">:</span><span class="c1">//192.168.122.91/centos6/ --cost=100</span>
-<span class="nf">%packages</span> <span class="o">--</span><span class="n">nobase</span>
+<span class="n">repo</span><span class="w"> </span><span class="o">--</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;CentOS&quot;</span><span class="w"> </span><span class="o">--</span><span class="n">baseurl</span><span class="o">=</span><span class="n">http</span><span class="o">:</span><span class="c1">//192.168.122.91/centos6/ --cost=100</span>
+<span class="nf">%packages</span><span class="w"> </span><span class="o">--</span><span class="n">nobase</span>
 <span class="err">@</span><span class="n">core</span>
 <span class="nf">%end</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Le parti sottolineate sono ovviamente le più importanti affinché si possa generare un'installazione completamente automatica secondo i nostri criteri; in particolare, utilizzo un repository locale prodotto da una minimal iso di centos scaricabile dal sito della <a href="http://mirrors.prometeus.net/centos/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso">distro</a> copiando il conttenuto in /var/www/lighttpd/centos6/ (e kernel e initrd in /tftpboot/centos6 ).</p>
 <p>Per generare l'hash della passwd di root:</p>
-<div class="highlight"><pre><span></span><span class="n">openssl</span> <span class="n">passwd</span> <span class="o">-</span><span class="mi">1</span> <span class="ss">&quot;mypasswd&quot;</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>openssl passwd -1 &quot;mypasswd&quot;
+</code></pre></div>
 
 <p>anche qui, ho specificato la console con lo stesso baud rate degli altri componenti, in modo che grub passi al kernel la console da utilizzare dopo l'installazione. In questo modo, con una sola linea di codice sarà possibile installare una VM e trovarsi al suo prompt, in meno di 5 minuti!!!!</p>
 <p>compiuti questi passaggi siamo pronti per installare la nostra prima vm; torniamo sull'host e installiamo una VM con il seguente comando:</p>
-<div class="highlight"><pre><span></span><span class="n">virt</span><span class="o">-</span><span class="n">install</span> <span class="c1">--name test2 --virt-type kvm \</span>
-<span class="c1">--vcpus=1 --ram 1072 --network network=default,model=virtio \ </span>
-<span class="c1">--disk path=/home/j0lly/images/test02,size=8 \</span>
-<span class="c1">--pxe  --nographics --os-variant=rhel6 --os-type=linux --autostart --debug</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="n">virt</span><span class="o">-</span><span class="n">install</span><span class="w"> </span><span class="o">--</span><span class="n">name</span><span class="w"> </span><span class="n">test2</span><span class="w"> </span><span class="o">--</span><span class="n">virt</span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="n">kvm</span><span class="w"> </span>\
+<span class="o">--</span><span class="n">vcpus</span><span class="o">=</span><span class="mi">1</span><span class="w"> </span><span class="o">--</span><span class="n">ram</span><span class="w"> </span><span class="mi">1072</span><span class="w"> </span><span class="o">--</span><span class="n">network</span><span class="w"> </span><span class="n">network</span><span class="o">=</span><span class="n">default</span><span class="p">,</span><span class="n">model</span><span class="o">=</span><span class="n">virtio</span><span class="w"> </span>\<span class="w"> </span>
+<span class="o">--</span><span class="n">disk</span><span class="w"> </span><span class="n">path</span><span class="o">=/</span><span class="n">home</span><span class="o">/</span><span class="n">j0lly</span><span class="o">/</span><span class="n">images</span><span class="o">/</span><span class="n">test02</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">8</span><span class="w"> </span>\
+<span class="o">--</span><span class="n">pxe</span><span class="w">  </span><span class="o">--</span><span class="n">nographics</span><span class="w"> </span><span class="o">--</span><span class="n">os</span><span class="o">-</span><span class="n">variant</span><span class="o">=</span><span class="n">rhel6</span><span class="w"> </span><span class="o">--</span><span class="n">os</span><span class="o">-</span><span class="n">type</span><span class="o">=</span><span class="n">linux</span><span class="w"> </span><span class="o">--</span><span class="n">autostart</span><span class="w"> </span><span class="o">--</span><span class="n">debug</span>
+</code></pre></div>
 
 <p>la parte magica qui è vestita dallo switch --pxe, che abilita il pxe booting durante l'installazione; da notare anche il network di riferimento, cioè quello utilizzato durante tutta la procedura del post.</p>
 <p>Questa Guida è un draft, scritto di fretta per non dimenticare le cose fatte.</p>
@@ -307,62 +287,27 @@ Per abilitare il tftpd server, è ora necessario modficare le linee del file /et
 <p><a href="http://lists.soekris.com/pipermail/soekris-tech/2012-August/018541.html">soekris</a></p>
 </blockquote>
 
+		<span class="post-tags">
+			Tags:
+			<ul>
+					<li><a href="https://www.j0llyb0x.org/tag/kvm.html">kvm</a></li>
+					<li><a href="https://www.j0llyb0x.org/tag/libvirt.html">libvirt</a></li>
+					<li><a href="https://www.j0llyb0x.org/tag/console.html">console</a></li>
+			</ul>
+		</span>
 
-    <div class="comments">
-        <div id="disqus_thread"></div>
-            <script type="text/javascript">
-                var disqus_shortname = 'j0llyshares';
-                var disqus_identifier = '2014/kvm-pxe-installation-over-console.html';
-                var disqus_url = 'https://www.j0llyb0x.org/2014/kvm-pxe-installation-over-console.html';
-                (function() {
-                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-                })();
-            </script>
-        <noscript>Please enable JavaScript to view the comments.</noscript>
-    </div>
-        
-    </div>
-        <!-- /Content --> 
-
-        <!-- Footer -->
-        <div class="footer gradient-2">
-            <div class="container footer-container ">
-                <div class="row">
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Sitemap</div>
-                        <ul class="list-unstyled">
-                            <li><a href="https://www.j0llyb0x.org/archives.html">Archives</a></li>
-                            <li><a href="https://www.j0llyb0x.org/tags.html">Tags</a></li>
-                            <li><a href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Social</div>
-                        <ul class="list-unstyled">
-                            <li><a href="http://github.com/j0lly" target="_blank">Github</a></li>
-                            <li><a href="https://it.linkedin.com/pub/josè-ferraris/4a/a32/384" target="_blank">Linkedin</a></li>
-                            <li><a href="#" target="_blank">Instagram</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Links</div>
-                        <ul class="list-unstyled">
-                            <li><a href="https://packetstormsecurity.com/" target="_blank">Packestorm</a></li>
-                            <li><a href="https://www.archlinux.org/" target="_blank">Archlinux</a></li>
-                        </ul>
-                    </div> 
-                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                        <p class="pull-right text-right">
-                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
-                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
-                            <small>&copy; j0llyb0x.org 2011-2015</small>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /Footer -->
-    </body>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+	var disqus_shortname = 'j0llyshares';
+	(function() {
+		var d = document, s = d.createElement('script'); s.type = 'text/javascript'; s.async = true;
+		s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+		</div>
+	</body>
 </html>

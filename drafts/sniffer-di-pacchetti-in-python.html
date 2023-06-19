@@ -1,108 +1,102 @@
 <!DOCTYPE html>
-<html lang="it">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Anche quest week-end sono riuscito a ritagliarmi un paio d&#39;ore per studiare un po di python e i socket. Oggi, seguendo una delle mitiche guide di binarytides, ho seguito la creazione di uno...">
-        <meta name="keywords" content="network, pyhton">
-        <link rel="icon" href="https://www.j0llyb0x.org/favicon.ico">
+<html lang="it" prefix="og: http://ogp.me/ns#">
+	<head>
+		<link href="http://gmpg.org/xfn/11" rel="profile">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-        <title>Sniffer di pacchetti in Python - j0llyb0x</title>
+		<!-- Metadata -->
+	<meta name="description" content="Sono Josè, un Systems Engineer appassionato di informatica ed altre cose più o meno adrenaliniche... Cerco ogni giorno di imparare e trasmettere quello che sò ">
+	<meta property="og:description" content="Sono Josè, un Systems Engineer appassionato di informatica ed altre cose più o meno adrenaliniche... Cerco ogni giorno di imparare e trasmettere quello che sò ">
+	<meta property="og:title" content="Sniffer di pacchetti in Python" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="https://www.j0llyb0x.org/drafts/sniffer-di-pacchetti-in-python.html" />
+		<meta property="og:image" content="https://www.j0llyb0x.org/images/logo-color.png" />
 
-        <!-- Stylesheets -->
-        <link href="https://www.j0llyb0x.org/theme/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://www.j0llyb0x.org/theme/css/fonts.css" rel="stylesheet">
-        <link href="https://www.j0llyb0x.org/theme/css/nest.css" rel="stylesheet">
-        <link href="https://www.j0llyb0x.org/theme/css/pygment.css" rel="stylesheet">
-        <!-- /Stylesheets -->
+		<!-- Enable responsiveness on mobile devices-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
-        <!-- RSS Feeds -->
-        <link href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Full Atom Feed" />
-        <link href="https://www.j0llyb0x.org/feeds/{slug}.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Categories Atom Feed" />
-        <!-- /RSS Feeds -->
+		<title>j0llyb0x - Learn or die trying</title>
 
-        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
+		<!-- CSS -->
+		<link href="//fonts.googleapis.com/" rel="dns-prefetch">
+		<link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Abril+Fatface|PT+Sans:400,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet">
 
-        <!-- Google Analytics -->
-        <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/poole.css" />
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/hyde.css" />
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/syntax.css" />
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.1.7/css/fork-awesome.min.css" crossorigin="anonymous">
 
-          ga('create', 'UA-18259053-2', 'auto');
-          ga('send', 'pageview');
-        </script>
-        <!-- /Google Analytics -->
+		<!-- Feeds -->
+<link href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Full Atom Feed" />
+<link href="https://www.j0llyb0x.org/feeds/drafts.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Categories Atom Feed" />
 
+		<!-- Analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-18259053-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    </head>
+  gtag('config', 'UA-18259053-2');
+</script>
+	</head>
 
-    <body>
+	<body class="theme-base-0b">
+<div class="sidebar">
+	<div class="container sidebar-sticky">
+		<div class="sidebar-about">
 
-        <!-- Header -->
-    <div class="header-container gradient">
-
-            <!-- Static navbar -->
-            <div class="container">
-                <div class="header-nav">
-                    <div class="header-logo">
-                        <a class="pull-left" href="https://www.j0llyb0x.org/"><img class="mr20" src="https://www.j0llyb0x.org/images/logo.png" alt="logo"></a>
-                    </div>
-                    <div class="nav pull-right">
-                                <a href="https://www.j0llyb0x.org/">Homepage</a>
-                                <a href="https://www.j0llyb0x.org/categories.html">Categories</a>
-                    </div>
-                </div>
-            </div>
-            <!-- /Static navbar -->
-
-            <!-- Header -->
-    <!-- Header -->
-    <div class="container header-wrapper">
-        <div class="row">
-              <div class="col-lg-12">
-                  <div class="header-content">
-                      <h1 class="header-title">Sniffer di pacchetti in Python</h1>
-                      <p class="header-date">By <a href="https://www.j0llyb0x.org/author/j0lly.html">j0lly</a>, Wed 17 June 2015, in category <a href="https://www.j0llyb0x.org/category/drafts.html">Drafts</a></p>
-                      <div class="header-underline"></div>
-                      <div class="clearfix"></div>
-                      <p class="pull-right header-tags">
-                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
-<a href="https://www.j0llyb0x.org/tag/network.html">network</a>, <a href="https://www.j0llyb0x.org/tag/pyhton.html">pyhton</a>                      </p>
-                  </div>
-              </div>
-        </div>
-    </div>
-    <!-- /Header -->
-            <!-- /Header -->
-
-        </div>
-        <!-- /Header -->
-
-
-        <!-- Content -->
-    <div class="container content">
-        <p>Anche quest week-end sono riuscito a ritagliarmi un paio d'ore per studiare un po di python e i socket. Oggi, seguendo una delle mitiche guide di <a href="http://www.binarytides.com/">binarytides</a>, ho seguito la creazione di uno sniffer di pacchetti, utilizzando python, i raw socket e (ovviamente) Linux. Anche questa volta, la guida arriva da questo articolo sui raw sockets; io l'ho semplicemente riscritto in lingua italiana cercando di sviscerare il significato delle linee di codice. Alcune considerazioni verranno omesse dato che ho già trattato alcuni concetti basilari sui socket e su python nelle guide python sui <a href="http://j0llyb0x.org/python-i-socket-client-tcp-ip-06-2013/">client</a> e <a href="http://j0llyb0x.org/pyhton-i-socket-un-server-tcp-ip-06-2013/">server</a>. PS [uso <a href="https://www.archlinux.org/">Archlinux</a>, e come tale il mio interprete di default è pyhton 3; dato che il codice è scritto per python 2, l'intestazione è relativa al mio sistema..] Ed eccoci al codice, anche oggi:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python2</span>
+			<h1>
+				<a href="/">
+					<img class="profile-picture" src="https://www.j0llyb0x.org/images/logo-color.png">
+					j0llyb0x
+				</a>
+			</h1>
+			<p class="lead"></p>
+			<p class="lead">Sono Josè, un Systems Engineer appassionato di informatica ed altre cose più o meno adrenaliniche... Cerco ogni giorno di imparare e trasmettere quello che sò  </p>
+			<p></p>
+		</div>
+			<ul class="sidebar-nav">
+					<li><a href="/categories.html">Categories</a></li>
+					<li><a href="/archives.html">All Articles</a></li>
+			</ul>
+		<nav class="sidebar-social">
+					<a class="sidebar-social-item" href="mailto:jos.ferraris@gmail.com">
+						<i class="fa fa-envelope"></i>
+					</a>
+					<a class="sidebar-social-item" href="https://github.com/j0lly" target="_blank">
+						<i class="fa fa-github"></i>
+					</a>
+					<a class="sidebar-social-item" href="https://www.linkedin.com/in/joseferraris/" target="_blank">
+						<i class="fa fa-linkedin"></i>
+					</a>
+			<a class="sidebar-social-item" href="https://www.j0llyb0x.org/feeds/all.atom.xml">
+				<i class="fa fa-rss"></i>
+			</a>
+		</nav>
+			<p class="sidebar-footer">&copy; j0llyb0x.org 2011-2015</p>
+	</div>
+</div>		<div class="content container">
+<div class="post">
+	<h1 class="post-title">Sniffer di pacchetti in Python</h1>
+	<span class="post-date">Wed 17 June 2015</span>
+	<p>Anche quest week-end sono riuscito a ritagliarmi un paio d'ore per studiare un po di python e i socket. Oggi, seguendo una delle mitiche guide di <a href="http://www.binarytides.com/">binarytides</a>, ho seguito la creazione di uno sniffer di pacchetti, utilizzando python, i raw socket e (ovviamente) Linux. Anche questa volta, la guida arriva da questo articolo sui raw sockets; io l'ho semplicemente riscritto in lingua italiana cercando di sviscerare il significato delle linee di codice. Alcune considerazioni verranno omesse dato che ho già trattato alcuni concetti basilari sui socket e su python nelle guide python sui <a href="http://j0llyb0x.org/python-i-socket-client-tcp-ip-06-2013/">client</a> e <a href="http://j0llyb0x.org/pyhton-i-socket-un-server-tcp-ip-06-2013/">server</a>. PS [uso <a href="https://www.archlinux.org/">Archlinux</a>, e come tale il mio interprete di default è pyhton 3; dato che il codice è scritto per python 2, l'intestazione è relativa al mio sistema..] Ed eccoci al codice, anche oggi:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="ch">#!/usr/bin/env python2</span>
 <span class="c1"># Preso a prestito da Silver Moon</span>
 <span class="c1"># modificato da me: j0lly</span>
 
@@ -116,8 +110,7 @@
 <span class="c1"># mettiamo il socket in ascolto</span>
 <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
     <span class="k">print</span> <span class="n">raw_socket</span><span class="o">.</span><span class="n">recvfrom</span><span class="p">(</span><span class="mi">65565</span><span class="p">)</span>
-</pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 
 <p>Prima di tutto creiamo il nostro solito socket, ma questa volta utilizzando il metodo <em>raw;</em> questo socket prende come input tre valori:_</p>
 <ul>
@@ -130,51 +123,51 @@ Se avete una connessione ad internet potreste già vedere il vostro socket in fu
 Ora che abbiamo il nostro socket e possiamo vedere che funziona alla grande, sarà il caso di scomporlo per lavorare sui pacchetti e recuperare più informazioni dai dati in arrivo e in uscita.
 L'output del socket è infatti in HEX, difficilmente comprensibile da me e, immagino, da voi.
 Avanti veloce, cominciamo a macinare codice:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python2</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="ch">#!/usr/bin/env python2</span>
 <span class="c1"># Preso a prestito da Silver Moon</span>
 <span class="c1"># modificato da me: j0lly</span>
 
@@ -219,104 +212,102 @@ Avanti veloce, cominciamo a macinare codice:</p>
     <span class="n">ip_dest</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_ntoa</span><span class="p">(</span><span class="n">iph_open</span><span class="p">[</span><span class="mi">9</span><span class="p">])</span>
 
     <span class="k">print</span> <span class="s1">&#39;IP Version : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; Lunghezza Header IP : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">iph_length</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; bytes &#39;</span>  <span class="o">+</span> <span class="s1">&#39; TTL : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ttl</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; Tipo di Protocollo : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">protocol</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; Source Address : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ip_source</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; Destination Address : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ip_dest</span><span class="p">)</span>
-</pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 
 <p>Il codice è ben commentato, ma siamo qua per questo :):
 importiamo struct e tutti i suoi moduli (questa è roba avanzata per me, ma immagino venga usata quando si scompatta il pacchtto e, in particolare, l'header.
 Prima di tutto trasformiamo in una lista il pacchetto, isoliamo l'header e successivamente lo "spacchettiamo" utilizzando la nomenclatura del C [questa parte è a me oscura, dato che trasformando il pacchetto in una lista diventa inleggibile] se inserisco un <em>print iph_open</em>, in effetti viene mostrata una lista di 10 oggetti, creata grazie al woodoo sopra riportato..
 successivamente, isoliamo le varie parti dell'header prendendo i campi della lista appena creata.
 ecco una bella immagine di quello che abbiamo:</p>
-<div class="highlight"><pre><span></span><span class="mi">0</span>                   <span class="mi">1</span>                   <span class="mi">2</span>                   <span class="mi">3</span>
+<div class="highlight"><pre><span></span><code><span class="c">0                   1                   2                   3</span>
 
-<span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">0</span> <span class="mi">1</span>
-<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
-<span class="o">|</span><span class="k">Version</span><span class="o">|</span>  <span class="n">IHL</span>  <span class="o">|</span><span class="k">Type</span> <span class="k">of</span> <span class="n">Service</span><span class="o">|</span>          <span class="n">Total</span> <span class="k">Length</span>         <span class="o">|</span>
-<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
-<span class="o">|</span>         <span class="n">Identification</span>        <span class="o">|</span><span class="n">Flags</span><span class="o">|</span>      <span class="n">Fragment</span> <span class="k">Offset</span>    <span class="o">|</span>
-<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
-<span class="o">|</span>  <span class="n">Time</span> <span class="k">to</span> <span class="n">Live</span> <span class="o">|</span>    <span class="n">Protocol</span>   <span class="o">|</span>         <span class="n">Header</span> <span class="n">Checksum</span>       <span class="o">|</span>
-<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
-<span class="o">|</span>                       <span class="k">Source</span> <span class="n">Address</span>                          <span class="o">|</span>
-<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
-<span class="o">|</span>                    <span class="n">Destination</span> <span class="n">Address</span>                        <span class="o">|</span>
-<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
-<span class="o">|</span>                    <span class="k">Options</span>                    <span class="o">|</span>    <span class="n">Padding</span>    <span class="o">|</span>
-<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
-</pre></div>
-
+<span class="c">0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span>
+<span class="nb">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="c">|Version|  IHL  |Type of Service|          Total Length         |</span>
+<span class="nb">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="c">|         Identification        |Flags|      Fragment Offset    |</span>
+<span class="nb">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="c">|  Time to Live |    Protocol   |         Header Checksum       |</span>
+<span class="nb">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="c">|                       Source Address                          |</span>
+<span class="nb">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="c">|                    Destination Address                        |</span>
+<span class="nb">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="c">|                    Options                    |    Padding    |</span>
+<span class="nb">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+</code></pre></div>
 
 <p>Correndo verso la meta, passiamo alla gestione dell'header TCP:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python2</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="ch">#!/usr/bin/env python2</span>
 <span class="c1"># Preso a prestito da Silver Moon</span>
 <span class="c1"># modificato da me: j0lly</span>
 
@@ -386,53 +377,30 @@ ecco una bella immagine di quello che abbiamo:</p>
 
     <span class="c1"># ed ora stampiamo a video</span>
     <span class="k">print</span> <span class="s1">&#39;Source Port : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">source_port</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; Dest Port : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dest_port</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; Sequence number : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sequenza</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; Acknowledgement number : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">acknowledgement</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; Lunghezza header TCP : &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">tcp_header_length</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-</pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 
 <p>Continua...</p>
 
+		<span class="post-tags">
+			Tags:
+			<ul>
+					<li><a href="https://www.j0llyb0x.org/tag/pyhton.html">pyhton</a></li>
+					<li><a href="https://www.j0llyb0x.org/tag/network.html">network</a></li>
+			</ul>
+		</span>
 
-        
-    </div>
-        <!-- /Content --> 
-
-        <!-- Footer -->
-        <div class="footer gradient-2">
-            <div class="container footer-container ">
-                <div class="row">
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Sitemap</div>
-                        <ul class="list-unstyled">
-                            <li><a href="https://www.j0llyb0x.org/archives.html">Archives</a></li>
-                            <li><a href="https://www.j0llyb0x.org/tags.html">Tags</a></li>
-                            <li><a href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Social</div>
-                        <ul class="list-unstyled">
-                            <li><a href="http://github.com/j0lly" target="_blank">Github</a></li>
-                            <li><a href="https://it.linkedin.com/pub/josè-ferraris/4a/a32/384" target="_blank">Linkedin</a></li>
-                            <li><a href="#" target="_blank">Instagram</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Links</div>
-                        <ul class="list-unstyled">
-                            <li><a href="https://packetstormsecurity.com/" target="_blank">Packestorm</a></li>
-                            <li><a href="https://www.archlinux.org/" target="_blank">Archlinux</a></li>
-                        </ul>
-                    </div> 
-                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                        <p class="pull-right text-right">
-                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
-                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
-                            <small>&copy; j0llyb0x.org 2011-2015</small>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /Footer -->
-    </body>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+	var disqus_shortname = 'j0llyshares';
+	(function() {
+		var d = document, s = d.createElement('script'); s.type = 'text/javascript'; s.async = true;
+		s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+		</div>
+	</body>
 </html>

@@ -1,99 +1,92 @@
 <!DOCTYPE html>
-<html lang="it">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="It&#39;s some days i&#39;m dealing with a beast: Upgrading some MediaWiki sites inexplicably hosted on a Winzoz platform. The process is a pain and i&#39;m spending hours to understand why, for example my...">
-        <meta name="keywords" content="mediawiki, mysql">
-        <link rel="icon" href="https://www.j0llyb0x.org/favicon.ico">
+<html lang="it" prefix="og: http://ogp.me/ns#">
+	<head>
+		<link href="http://gmpg.org/xfn/11" rel="profile">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-        <title>MediaWiki & MySql installation: Pwned by Charset - j0llyb0x</title>
+		<!-- Metadata -->
+	<meta name="description" content="Sono Josè, un Systems Engineer appassionato di informatica ed altre cose più o meno adrenaliniche... Cerco ogni giorno di imparare e trasmettere quello che sò ">
+	<meta property="og:description" content="Sono Josè, un Systems Engineer appassionato di informatica ed altre cose più o meno adrenaliniche... Cerco ogni giorno di imparare e trasmettere quello che sò ">
+	<meta property="og:title" content="MediaWiki & MySql installation: Pwned by Charset" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="https://www.j0llyb0x.org/2013/mediawiki-mysql-installation-pwned-by-charset.html" />
+		<meta property="og:image" content="https://www.j0llyb0x.org/images/logo-color.png" />
 
-        <!-- Stylesheets -->
-        <link href="https://www.j0llyb0x.org/theme/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://www.j0llyb0x.org/theme/css/fonts.css" rel="stylesheet">
-        <link href="https://www.j0llyb0x.org/theme/css/nest.css" rel="stylesheet">
-        <link href="https://www.j0llyb0x.org/theme/css/pygment.css" rel="stylesheet">
-        <!-- /Stylesheets -->
+		<!-- Enable responsiveness on mobile devices-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
-        <!-- RSS Feeds -->
-        <link href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Full Atom Feed" />
-        <link href="https://www.j0llyb0x.org/feeds/{slug}.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Categories Atom Feed" />
-        <!-- /RSS Feeds -->
+		<title>j0llyb0x - Learn or die trying</title>
 
-        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
+		<!-- CSS -->
+		<link href="//fonts.googleapis.com/" rel="dns-prefetch">
+		<link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Abril+Fatface|PT+Sans:400,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet">
 
-        <!-- Google Analytics -->
-        <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/poole.css" />
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/hyde.css" />
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/syntax.css" />
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.1.7/css/fork-awesome.min.css" crossorigin="anonymous">
 
-          ga('create', 'UA-18259053-2', 'auto');
-          ga('send', 'pageview');
-        </script>
-        <!-- /Google Analytics -->
+		<!-- Feeds -->
+<link href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Full Atom Feed" />
+<link href="https://www.j0llyb0x.org/feeds/sysadmin.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Categories Atom Feed" />
 
+		<!-- Analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-18259053-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    </head>
+  gtag('config', 'UA-18259053-2');
+</script>
+	</head>
 
-    <body>
+	<body class="theme-base-0b">
+<div class="sidebar">
+	<div class="container sidebar-sticky">
+		<div class="sidebar-about">
 
-        <!-- Header -->
-    <div class="header-container gradient">
-
-            <!-- Static navbar -->
-            <div class="container">
-                <div class="header-nav">
-                    <div class="header-logo">
-                        <a class="pull-left" href="https://www.j0llyb0x.org/"><img class="mr20" src="https://www.j0llyb0x.org/images/logo.png" alt="logo"></a>
-                    </div>
-                    <div class="nav pull-right">
-                                <a href="https://www.j0llyb0x.org/">Homepage</a>
-                                <a href="https://www.j0llyb0x.org/categories.html">Categories</a>
-                    </div>
-                </div>
-            </div>
-            <!-- /Static navbar -->
-
-            <!-- Header -->
-    <!-- Header -->
-    <div class="container header-wrapper">
-        <div class="row">
-              <div class="col-lg-12">
-                  <div class="header-content">
-                      <h1 class="header-title">MediaWiki & MySql installation: Pwned by Charset</h1>
-                      <p class="header-date">By <a href="https://www.j0llyb0x.org/author/j0lly.html">j0lly</a>, Tue 08 January 2013, in category <a href="https://www.j0llyb0x.org/category/sysadmin.html">Sysadmin</a></p>
-                      <div class="header-underline"></div>
-                      <div class="clearfix"></div>
-                      <p class="pull-right header-tags">
-                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
-<a href="https://www.j0llyb0x.org/tag/mediawiki.html">mediawiki</a>, <a href="https://www.j0llyb0x.org/tag/mysql.html">mysql</a>                      </p>
-                  </div>
-              </div>
-        </div>
-    </div>
-    <!-- /Header -->
-            <!-- /Header -->
-
-        </div>
-        <!-- /Header -->
-
-
-        <!-- Content -->
-    <div class="container content">
-        <p>It's some days i'm dealing with a beast: Upgrading some MediaWiki sites inexplicably hosted on a Winzoz platform.</p>
+			<h1>
+				<a href="/">
+					<img class="profile-picture" src="https://www.j0llyb0x.org/images/logo-color.png">
+					j0llyb0x
+				</a>
+			</h1>
+			<p class="lead"></p>
+			<p class="lead">Sono Josè, un Systems Engineer appassionato di informatica ed altre cose più o meno adrenaliniche... Cerco ogni giorno di imparare e trasmettere quello che sò  </p>
+			<p></p>
+		</div>
+			<ul class="sidebar-nav">
+					<li><a href="/categories.html">Categories</a></li>
+					<li><a href="/archives.html">All Articles</a></li>
+			</ul>
+		<nav class="sidebar-social">
+					<a class="sidebar-social-item" href="mailto:jos.ferraris@gmail.com">
+						<i class="fa fa-envelope"></i>
+					</a>
+					<a class="sidebar-social-item" href="https://github.com/j0lly" target="_blank">
+						<i class="fa fa-github"></i>
+					</a>
+					<a class="sidebar-social-item" href="https://www.linkedin.com/in/joseferraris/" target="_blank">
+						<i class="fa fa-linkedin"></i>
+					</a>
+			<a class="sidebar-social-item" href="https://www.j0llyb0x.org/feeds/all.atom.xml">
+				<i class="fa fa-rss"></i>
+			</a>
+		</nav>
+			<p class="sidebar-footer">&copy; j0llyb0x.org 2011-2015</p>
+	</div>
+</div>		<div class="content container">
+<div class="post">
+	<h1 class="post-title">MediaWiki & MySql installation: Pwned by Charset</h1>
+	<span class="post-date">Tue 08 January 2013</span>
+	<p>It's some days i'm dealing with a beast: Upgrading some MediaWiki sites inexplicably hosted on a Winzoz platform.</p>
 <p><img alt="mediawiki" src="https://www.j0llyb0x.org/images/mediawiki-1.png"></p>
 <p>The process is a pain and i'm spending hours to understand why, for example my Localsettings.php was not read from the stupid IIS server giving me odds messages in the PHP logs:</p>
-<div class="highlight"><pre><span></span><span class="n">Fatal</span> <span class="n">error</span><span class="p">:</span> <span class="n">impossibile</span> <span class="n">aprire</span> <span class="n">file</span> <span class="n">blabla</span> <span class="n">blabla</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>Fatal error: impossibile aprire file blabla blabla
+</code></pre></div>
 
 <p>I'm very noob at Windows and i'm unconfortable on checking privilages in graphical windows; turned out that copying the config files previously backupped, from a storage server, erased all the IIS user permissions from my MediaWiki folder...</p>
 <p>This is not the funny part of the story while the fight on a Mysql database became a real nightmare!</p>
@@ -116,72 +109,35 @@
 <p>I wrote it with a shiny, undetectable £ symbols, that wasn't properly saved or parsed in the Mysql schema due to the Charset of the MySql.</p>
 <p>I've lost a bunch of hours for a stupid symbol; remember: check the charset in use when you set a strong password; this time i had the root access and no problems, but guess what if I had set that password for the Root instead?</p>
 <p>So, double check the charset and, to do so in the Mysql simply type status from mysql terminal should look like this:</p>
-<div class="highlight"><pre><span></span><span class="n">Connection</span><span class="o">:</span> <span class="n">Localhost</span> <span class="n">via</span> <span class="n">UNIX</span> <span class="n">socket</span>
-<span class="n">Server</span> <span class="n">characterset</span><span class="o">:</span> <span class="n">latin1</span>
-<span class="n">Db</span> <span class="n">characterset</span><span class="o">:</span> <span class="n">latin1</span>
-<span class="n">Client</span> <span class="n">characterset</span><span class="o">:</span> <span class="n">utf8</span>
-<span class="n">Conn</span><span class="o">.</span> <span class="n">characterset</span><span class="o">:</span> <span class="n">utf8</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="n">Connection</span><span class="o">:</span><span class="w"> </span><span class="n">Localhost</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="n">UNIX</span><span class="w"> </span><span class="n">socket</span>
+<span class="n">Server</span><span class="w"> </span><span class="n">characterset</span><span class="o">:</span><span class="w"> </span><span class="n">latin1</span>
+<span class="n">Db</span><span class="w"> </span><span class="n">characterset</span><span class="o">:</span><span class="w"> </span><span class="n">latin1</span>
+<span class="n">Client</span><span class="w"> </span><span class="n">characterset</span><span class="o">:</span><span class="w"> </span><span class="n">utf8</span>
+<span class="n">Conn</span><span class="o">.</span><span class="w"> </span><span class="n">characterset</span><span class="o">:</span><span class="w"> </span><span class="n">utf8</span>
+</code></pre></div>
 
 <p>I hope somebody fallen in my situation could find this infos useful, at least to avoid loosing 4 hours to install a MediaWiki site!</p>
 
+		<span class="post-tags">
+			Tags:
+			<ul>
+					<li><a href="https://www.j0llyb0x.org/tag/mediawiki.html">mediawiki</a></li>
+					<li><a href="https://www.j0llyb0x.org/tag/mysql.html">mysql</a></li>
+			</ul>
+		</span>
 
-    <div class="comments">
-        <div id="disqus_thread"></div>
-            <script type="text/javascript">
-                var disqus_shortname = 'j0llyshares';
-                var disqus_identifier = '2013/mediawiki-mysql-installation-pwned-by-charset.html';
-                var disqus_url = 'https://www.j0llyb0x.org/2013/mediawiki-mysql-installation-pwned-by-charset.html';
-                (function() {
-                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-                })();
-            </script>
-        <noscript>Please enable JavaScript to view the comments.</noscript>
-    </div>
-        
-    </div>
-        <!-- /Content --> 
-
-        <!-- Footer -->
-        <div class="footer gradient-2">
-            <div class="container footer-container ">
-                <div class="row">
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Sitemap</div>
-                        <ul class="list-unstyled">
-                            <li><a href="https://www.j0llyb0x.org/archives.html">Archives</a></li>
-                            <li><a href="https://www.j0llyb0x.org/tags.html">Tags</a></li>
-                            <li><a href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Social</div>
-                        <ul class="list-unstyled">
-                            <li><a href="http://github.com/j0lly" target="_blank">Github</a></li>
-                            <li><a href="https://it.linkedin.com/pub/josè-ferraris/4a/a32/384" target="_blank">Linkedin</a></li>
-                            <li><a href="#" target="_blank">Instagram</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
-                        <div class="footer-title">Links</div>
-                        <ul class="list-unstyled">
-                            <li><a href="https://packetstormsecurity.com/" target="_blank">Packestorm</a></li>
-                            <li><a href="https://www.archlinux.org/" target="_blank">Archlinux</a></li>
-                        </ul>
-                    </div> 
-                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
-                        <p class="pull-right text-right">
-                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
-                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
-                            <small>&copy; j0llyb0x.org 2011-2015</small>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /Footer -->
-    </body>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+	var disqus_shortname = 'j0llyshares';
+	(function() {
+		var d = document, s = d.createElement('script'); s.type = 'text/javascript'; s.async = true;
+		s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+		</div>
+	</body>
 </html>

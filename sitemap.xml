@@ -5,36 +5,36 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://www.j0llyb0x.org/</loc>
-<lastmod>2019-07-27T18:56:00-00:00</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>https://www.j0llyb0x.org/archives.html</loc>
-<lastmod>2019-07-27T18:56:00-00:00</lastmod>
+<lastmod>2023-06-20T00:04:48-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://www.j0llyb0x.org/tags.html</loc>
-<lastmod>2019-07-27T18:56:00-00:00</lastmod>
+<lastmod>2023-06-20T00:04:48-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://www.j0llyb0x.org/categories.html</loc>
-<lastmod>2019-07-27T18:56:00-00:00</lastmod>
+<lastmod>2023-06-20T00:04:48-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>https://www.j0llyb0x.org/pages/about.html</loc>
-<lastmod>2014-06-17T00:00:00+02:00</lastmod>
-<changefreq>monthly</changefreq>
+<loc>https://www.j0llyb0x.org/authors.html</loc>
+<lastmod>2023-06-20T00:04:48-00:00</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://www.j0llyb0x.org/archives.html</loc>
+<lastmod>2023-06-20T00:04:48-00:00</lastmod>
+<changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
