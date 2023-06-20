@@ -5,36 +5,43 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://www.j0llyb0x.org/</loc>
-<lastmod>2023-06-20T00:09:09-00:00</lastmod>
+<lastmod>2023-06-20T08:11:04-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://www.j0llyb0x.org/tags.html</loc>
-<lastmod>2023-06-20T00:09:09-00:00</lastmod>
+<lastmod>2023-06-20T08:11:04-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://www.j0llyb0x.org/categories.html</loc>
-<lastmod>2023-06-20T00:09:09-00:00</lastmod>
+<lastmod>2023-06-20T08:11:04-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://www.j0llyb0x.org/authors.html</loc>
-<lastmod>2023-06-20T00:09:09-00:00</lastmod>
+<lastmod>2023-06-20T08:11:04-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://www.j0llyb0x.org/archives.html</loc>
-<lastmod>2023-06-20T00:09:09-00:00</lastmod>
+<lastmod>2023-06-20T08:11:04-00:00</lastmod>
 <changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://www.j0llyb0x.org/2023/mettere-in-fila-i-pezzi.html</loc>
+<lastmod>2023-06-20T00:00:00+02:00</lastmod>
+<changefreq>weekly</changefreq>
 <priority>0.5</priority>
 </url>
 
@@ -209,6 +216,20 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>https://www.j0llyb0x.org/category/sysadmin.html</loc>
 <lastmod>2015-06-17T00:00:00+00:50</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://www.j0llyb0x.org/category/thoughts.html</loc>
+<lastmod>2023-06-20T00:00:00+00:50</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://www.j0llyb0x.org/tag/life.html</loc>
+<lastmod>2023-06-20T00:00:00+00:50</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -502,7 +523,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://www.j0llyb0x.org/author/j0lly.html</loc>
-<lastmod>2015-06-17T00:00:00+00:50</lastmod>
+<lastmod>2023-06-20T00:00:00+00:50</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
