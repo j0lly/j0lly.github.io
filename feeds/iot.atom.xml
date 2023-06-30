@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>j0llyb0x - IoT</title><link href="https://www.j0llyb0x.org/" rel="alternate"></link><link href="https://www.j0llyb0x.org/feeds/iot.atom.xml" rel="self"></link><id>https://www.j0llyb0x.org/</id><updated>2023-06-30T00:00:00+02:00</updated><subtitle>Learn or die trying</subtitle><entry><title>ambiente di sviluppo per micropython con wsl, vscode e PyMakr</title><link href="https://www.j0llyb0x.org/2023/ambiente-di-sviluppo-per-micropython-con-wsl-vscode-e-pymakr.html" rel="alternate"></link><published>2023-06-30T00:00:00+02:00</published><updated>2023-06-30T00:00:00+02:00</updated><author><name>j0lly</name></author><id>tag:www.j0llyb0x.org,2023-06-30:/2023/ambiente-di-sviluppo-per-micropython-con-wsl-vscode-e-pymakr.html</id><summary type="html">&lt;p&gt;Dato che nessuno vorrebbe sviluppare i propri progetti IoT con &lt;a href="https://micropython.org/"&gt;Micropython&lt;/a&gt; su Windows, mi sono configurato un ambiente di sviluppo abbastanza funzionale basato su &lt;a href="https://code.visualstudio.com/"&gt;vscode&lt;/a&gt;, &lt;a href="https://learn.microsoft.com/en-us/windows/wsl/"&gt;wsl&lt;/a&gt; e l'estensione &lt;a href="https://marketplace.visualstudio.com/items?itemName=pycom.Pymakr"&gt;pymakr&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="esp32 dev board" src="https://www.j0llyb0x.org/images/esp32.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;Cominciamo coi pre-requisiti:
+- &lt;a href="https://learn.microsoft.com/en-us/windows/wsl/install"&gt;installare wsl2&lt;/a&gt; con ubuntu (default)
+- &lt;a href="https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode"&gt;installare e configurare vscode&lt;/a&gt; con remote wsl extension&lt;/p&gt;
+&lt;p&gt;A questo punto potete già …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Dato che nessuno vorrebbe sviluppare i propri progetti IoT con &lt;a href="https://micropython.org/"&gt;Micropython&lt;/a&gt; su Windows, mi sono configurato un ambiente di sviluppo abbastanza funzionale basato su &lt;a href="https://code.visualstudio.com/"&gt;vscode&lt;/a&gt;, &lt;a href="https://learn.microsoft.com/en-us/windows/wsl/"&gt;wsl&lt;/a&gt; e l'estensione &lt;a href="https://marketplace.visualstudio.com/items?itemName=pycom.Pymakr"&gt;pymakr&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="esp32 dev board" src="https://www.j0llyb0x.org/images/esp32.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;Cominciamo coi pre-requisiti:
+- &lt;a href="https://learn.microsoft.com/en-us/windows/wsl/install"&gt;installare wsl2&lt;/a&gt; con ubuntu (default)
+- &lt;a href="https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode"&gt;installare e configurare vscode&lt;/a&gt; con remote wsl extension&lt;/p&gt;
+&lt;p&gt;A questo punto potete già sviluppare quello che volete in ambiente linux con vscode da una macchina windows con innumerrevoli vantaggi tra qui una gestione umana delle versioni e paths di python, git out of the box ed altro ancora..&lt;/p&gt;
+&lt;p&gt;&lt;img alt="ambiente di sviluppo linux" src="https://www.j0llyb0x.org/images/devenv.png"&gt;&lt;/p&gt;
+&lt;p&gt;I prossimi passaggi saranno:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;setup WSL per lo sviluppo remoto&lt;/li&gt;
+&lt;li&gt;installazione di tools specifici per sviluppo con micropyhton&lt;/li&gt;
+&lt;li&gt;installare micropython su una devboard e creare il nostro primo progetto&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;setup WSL&lt;/h2&gt;
+&lt;p&gt;Per configurare il WSL per un ambiente di sviluppo micropython servono 2 step:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;installare e configurare python3&lt;/li&gt;
+&lt;li&gt;configurare la gestione del forwarding delle porte USB da host a guest&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;nel container wsl, se stai usando la release 20.04 (default quando ho installato la distro), la versione di python è davvero vecchia; io uso sempre pyenv per gestire le versioni di python nei miei device e ambienti:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;update
+sudo&lt;span class="w"&gt; &lt;/span&gt;apt-get&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;-y&lt;span class="w"&gt; &lt;/span&gt;make&lt;span class="w"&gt; &lt;/span&gt;build-essential&lt;span class="w"&gt; &lt;/span&gt;libssl-dev&lt;span class="w"&gt; &lt;/span&gt;zlib1g-dev&lt;span class="w"&gt; &lt;/span&gt;libbz2-dev&lt;span class="w"&gt; &lt;/span&gt;libreadline-dev&lt;span class="w"&gt; &lt;/span&gt;libsqlite3-dev&lt;span class="w"&gt; &lt;/span&gt;wget&lt;span class="w"&gt; &lt;/span&gt;curl&lt;span class="w"&gt; &lt;/span&gt;llvm&lt;span class="w"&gt; &lt;/span&gt;libncurses5-dev&lt;span class="w"&gt; &lt;/span&gt;libncursesw5-dev&lt;span class="w"&gt; &lt;/span&gt;xz-utils&lt;span class="w"&gt; &lt;/span&gt;tk-dev&lt;span class="w"&gt; &lt;/span&gt;libffi-dev&lt;span class="w"&gt; &lt;/span&gt;liblzma-dev&lt;span class="w"&gt; &lt;/span&gt;python-openssl&lt;span class="w"&gt; &lt;/span&gt;git&lt;span class="w"&gt; &lt;/span&gt;zlib1g&lt;span class="w"&gt; &lt;/span&gt;zlib1g-dev&lt;span class="w"&gt; &lt;/span&gt;libssl-dev&lt;span class="w"&gt; &lt;/span&gt;libbz2-dev&lt;span class="w"&gt; &lt;/span&gt;libsqlite3-dev
+curl&lt;span class="w"&gt; &lt;/span&gt;https://pyenv.run&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;bash
+&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;export PYENV_ROOT=&amp;quot;$HOME/.pyenv&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;~/.bashrc
+&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;export PATH=&amp;quot;$PYENV_ROOT/bin:$PATH&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;~/.bashrc
+&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;eval &amp;quot;$(pyenv init -)&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;~/.bashrc
+&lt;span class="nb"&gt;source&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;~/.bashrc
+pyenv&lt;span class="w"&gt;  &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;.11
+pyenv&lt;span class="w"&gt; &lt;/span&gt;global&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;.11
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Per configurare la gestione delle porte USB, per il WSL ubuntu, servono un paio di passaggi; prima di tutto, vogliamo gestire le console con &lt;a href="https://learn.microsoft.com/it-it/windows/wsl/systemd"&gt;systemd&lt;/a&gt; in modo da avere i permessi corretti "out of the box". Per fare ciò serve modificare il file di configurazione del wsl all'interno del container:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;echo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-e&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;[boot]\nsystemd=true\n&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;tee&lt;span class="w"&gt;  &lt;/span&gt;/etc/wsl.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;e riavviare il WSL con &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;wsl&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exe&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-shutdown&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;successivamente serve abilitare il &lt;a href="https://learn.microsoft.com/it-it/windows/wsl/connect-usb"&gt;forwarding&lt;/a&gt; dei dispositivi USB al WSL:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;winget&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-interactive&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="o"&gt;-exact&lt;/span&gt; &lt;span class="n"&gt;dorssel&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;usbipd-win&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Mentre nel container:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;apt&lt;span class="w"&gt; &lt;/span&gt;update&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;sudo&lt;span class="w"&gt; &lt;/span&gt;apt&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;linux-tools-generic&lt;span class="w"&gt; &lt;/span&gt;hwdata
+sudo&lt;span class="w"&gt; &lt;/span&gt;update-alternatives&lt;span class="w"&gt; &lt;/span&gt;--install&lt;span class="w"&gt; &lt;/span&gt;/usr/local/bin/usbip&lt;span class="w"&gt; &lt;/span&gt;usbip&lt;span class="w"&gt; &lt;/span&gt;/usr/lib/linux-tools/*-generic/usbip&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;20&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2&gt;installare i tools necessari&lt;/h2&gt;
+&lt;p&gt;Ora installiamo alcuni tools per gestione e sviluppo con micropython:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/espressif/esptool"&gt;esptool&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marketplacevisualstudio.com/items?itemName=pycom.Pymakr"&gt;pymakr&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/BradenM/micropy-cli"&gt;micropy-cli&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;esptool serve per flashare micropython sul microcontroller mentre micropy-cli è un utilissimo tool per aggiungere ai progetti l'auto-completion e poter fare linting con micropython oltre che per fare scaffolding di nuovi progetti micropython.
+Per entrambi i tool basta utilizzare pip:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pip&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;esptool&lt;span class="w"&gt; &lt;/span&gt;micropy-cli
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;micropy-cli per funzionare con vscode ha bisogno di un po di setup; serve installare &lt;a href="https://marketplace.visualstudio.com/items?itemName=VisualStudioExptTeam.vscodeintellicode"&gt;intellisense&lt;/a&gt; nel wsl ed in oltre servono gli "stubs" per l'autocompletion:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;micropy&lt;span class="w"&gt; &lt;/span&gt;stubs&lt;span class="w"&gt; &lt;/span&gt;install&lt;span class="w"&gt; &lt;/span&gt;micropython-esp32-stubs
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;se volete vedere che versione di micropython viene usata nello stub potete usare la funzione search per avere più info:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;micropy&lt;span class="w"&gt; &lt;/span&gt;stubs&lt;span class="w"&gt; &lt;/span&gt;search&lt;span class="w"&gt; &lt;/span&gt;esp32
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;per pymakr, basta installare (nell'stanza remota di vscode) &lt;a href="https://marketplace.visualstudio.com/items?itemName=pycom.pymakr-preview"&gt;l'estensione&lt;/a&gt;.Ad oggi serve installare le verisone preview perchè c'è qualche problema di compatibilità con vscode. L'estensione è stata fatta per la pyboard ma può essere usata con qualsiasi board su cui giri micropython&lt;/p&gt;
+&lt;p&gt;per concludere ecco una lista di estensioni che utilizzo sepre per sviluppare (anche in Cpython):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python"&gt;python&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance"&gt;pylance&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marketplace.visualstudio.com/items?itemName=ms-python.pylint"&gt;pylint&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter"&gt;black&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marketplace.visualstudio.com/items?itemName=donjayamanne.python-environment-manager"&gt;python virtualenv manager&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;setup progetto&lt;/h2&gt;
+&lt;p&gt;siamo ormai pronti per il nostro prossimo progetto embedded ma prima di tutto, serve avere due cose:
+una devboard e micropython!&lt;/p&gt;
+&lt;p&gt;Io, ho parecchie devboard esp32 comprate negli anni su aliexpress come questa:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="lolin lite 32" src="https://www.j0llyb0x.org/images/lolinlite32.png"&gt;&lt;/p&gt;
+&lt;p&gt;per micropython, scaricate la versione direttamente dal &lt;a href="https://micropython.org/download/"&gt;sito&lt;/a&gt;, specifica per la vostra board nel container:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;wget&lt;span class="w"&gt; &lt;/span&gt;https://micropython.org/resources/firmware/esp32-20230426-v1.20.0.bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;a questo punto, con la board collegate la board al computer; usate un cavo con il canale dati altrimenti perderete 1 ora come me a cercare di capire cosa non vada... In generale, se sentite il "dling-dlong" di windows quando attaccate la board siete a cavallo.&lt;/p&gt;
+&lt;p&gt;Ora, date il controllo del bus USB al container (serve farlo ogni volta che connettete il cavo al pc) con una shell &lt;strong&gt;da amministratore&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;usbipd&lt;/span&gt; &lt;span class="n"&gt;wsl&lt;/span&gt; &lt;span class="n"&gt;list&lt;/span&gt;
+&lt;span class="n"&gt;usbipd&lt;/span&gt; &lt;span class="n"&gt;wsl&lt;/span&gt; &lt;span class="n"&gt;attach&lt;/span&gt; &lt;span class="p"&gt;-&lt;/span&gt;&lt;span class="n"&gt;-busid&lt;/span&gt; &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;busid&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;a titolo di esempio, potete vedere quando la board non è connessa e quando lo è, e nella seconda schermata quando la porta USB è gestita dal container WSL.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="usb list" src="https://www.j0llyb0x.org/images/usbipd.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="usb attached" src="https://www.j0llyb0x.org/images/usbipd-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;mentre nel container dovreste poter listare il nuovo device:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;lsusb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img alt="lsusb" src="https://www.j0llyb0x.org/images/lsusb.png"&gt;&lt;/p&gt;
+&lt;p&gt;ora siamo pronti a flashare l'immagine nel microcontroller (path, parametri e porte dipendono dal vostro controller etc):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;esptool.py&lt;span class="w"&gt; &lt;/span&gt;--chip&lt;span class="w"&gt; &lt;/span&gt;esp32&lt;span class="w"&gt; &lt;/span&gt;--port&lt;span class="w"&gt; &lt;/span&gt;/dev/ttyUSB0&lt;span class="w"&gt; &lt;/span&gt;erase_flash
+esptool.py&lt;span class="w"&gt; &lt;/span&gt;--chip&lt;span class="w"&gt; &lt;/span&gt;esp32&lt;span class="w"&gt; &lt;/span&gt;--port&lt;span class="w"&gt; &lt;/span&gt;/dev/ttyUSB0&lt;span class="w"&gt; &lt;/span&gt;--baud&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;460800&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;write_flash&lt;span class="w"&gt; &lt;/span&gt;-z&lt;span class="w"&gt; &lt;/span&gt;0x1000&lt;span class="w"&gt; &lt;/span&gt;esp32-20230426-v1.20.0.bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img alt="esptool erase" src="https://www.j0llyb0x.org/images/esp_erase.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="esptool flash" src="https://www.j0llyb0x.org/images/esp_flash.png"&gt;&lt;/p&gt;
+&lt;p&gt;Se tutto è andato a buon fine, abbiamo una board pronta per essere programmata in micropython, collegata al nostro WSL!&lt;/p&gt;
+&lt;p&gt;Ora non resta che create un progetto e conminciare a scrivere codice.&lt;/p&gt;
+&lt;p&gt;Prima di tutto, creiamo un progetto con micropy-cli e configuriamo la connessione con pymakr:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir&lt;span class="w"&gt; &lt;/span&gt;newproject&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;newproject
+micropy&lt;span class="w"&gt; &lt;/span&gt;init&lt;span class="w"&gt; &lt;/span&gt;-n&lt;span class="w"&gt; &lt;/span&gt;newproject&lt;span class="w"&gt; &lt;/span&gt;-t&lt;span class="w"&gt; &lt;/span&gt;vscode&lt;span class="w"&gt; &lt;/span&gt;-t&lt;span class="w"&gt; &lt;/span&gt;pymakr&lt;span class="w"&gt; &lt;/span&gt;-t&lt;span class="w"&gt; &lt;/span&gt;pylint&lt;span class="w"&gt; &lt;/span&gt;-t&lt;span class="w"&gt; &lt;/span&gt;gitignore&lt;span class="w"&gt; &lt;/span&gt;-t&lt;span class="w"&gt; &lt;/span&gt;bootstrap&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt;  &lt;/span&gt;micropython-stdlib-stubs&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;micropython-esp32-stubs
+code&lt;span class="w"&gt; &lt;/span&gt;.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Io ho direttamente specificato gli stubs che ho installato ma lanciando la cli in maniera interattiva potete selezionare config e stubs in base alla vostra installazione&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;micropy&lt;span class="w"&gt; &lt;/span&gt;init
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;quando vscode si aprirà, avrete un workspace già configurato e pronto per configurare la connessione al microcontroller.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="vscode pymakr" src="https://www.j0llyb0x.org/images/vscode_pymakr.png"&gt;&lt;/p&gt;
+&lt;p&gt;nel tab in basso avrete la vostra board nei devices associati al progetto; ora potete connettervi e verificare che tutto funzioni aprendo una shell interattiva nel device&lt;/p&gt;
+&lt;p&gt;&lt;img alt="vscode pymakr connect" src="https://www.j0llyb0x.org/images/vscode_pymakr-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;ed ora, proviamo a scrivere del "upython" code con l'aiuto del linter e code hints&lt;/p&gt;
+&lt;p&gt;&lt;img alt="vscode pymakr code hints" src="https://www.j0llyb0x.org/images/vscode_pymakr-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;That's it! possiamo divertirci con micropython e i nostri piccoli device in un ambiente davvero comodo per lo sviluppo e il test delle nostre applicazioni IoT!&lt;/p&gt;</content><category term="IoT"></category><category term="micropython"></category><category term="esp32"></category><category term="vscode"></category><category term="python"></category><category term="development"></category><category term="wsl"></category><category term="ubuntu"></category><category term="pymakr"></category></entry></feed>

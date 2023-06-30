@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="it" prefix="og: http://ogp.me/ns#">
+	<head>
+		<link href="http://gmpg.org/xfn/11" rel="profile">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+		<!-- Metadata -->
+	<meta name="description" content="">
+	<meta property="og:description" content="">
+	<meta property="og:title" content="ambiente di sviluppo per micropython con wsl, vscode e PyMakr" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="https://www.j0llyb0x.org/2023/ambiente-di-sviluppo-per-micropython-con-wsl-vscode-e-pymakr.html" />
+		<meta property="og:image" content="https://www.j0llyb0x.org/images/logo-color.png" />
+
+		<!-- Enable responsiveness on mobile devices-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+		<title>j0llyb0x - Learn or die trying</title>
+
+		<!-- CSS -->
+		<link href="//fonts.googleapis.com/" rel="dns-prefetch">
+		<link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Abril+Fatface|PT+Sans:400,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet">
+
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/poole.css" />
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/hyde.css" />
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/syntax.css" />
+		<link rel="stylesheet" href="https://www.j0llyb0x.org/theme/css/style.css" />
+
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.1.7/css/fork-awesome.min.css" crossorigin="anonymous">
+
+		<!-- Feeds -->
+<link href="https://www.j0llyb0x.org/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Full Atom Feed" />
+<link href="https://www.j0llyb0x.org/feeds/iot.atom.xml" type="application/atom+xml" rel="alternate" title="j0llyb0x Categories Atom Feed" />
+
+		<!-- Analytics -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-18259053-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-18259053-2');
+</script>
+	</head>
+
+	<body class="theme-base-0b">
+<div class="sidebar">
+	<div class="container sidebar-sticky">
+		<div class="sidebar-about">
+
+			<h1>
+				<a href="/">
+					<img class="profile-picture" src="https://www.j0llyb0x.org/images/logo-color.png">
+					j0llyb0x
+				</a>
+			</h1>
+			<p class="lead"></p>
+			<p class="lead"> </p>
+			<p></p>
+		</div>
+		<ul class="sidebar-nav">
+			<li><a href="/categories.html">categories</a></li>
+			<li><a href="/archives.html">archives</a></li>
+		</ul>
+		<nav>
+			<ul class="tagcloud">
+				<li class="tag-1">
+					<a href="https://www.j0llyb0x.org/tag/hacking.html">
+						hacking
+						<span class="badge">5</span>
+					</a>
+				</li>
+				<li class="tag-4">
+					<a href="https://www.j0llyb0x.org/tag/ubuntu.html">
+						ubuntu
+						<span class="badge">2</span>
+					</a>
+				</li>
+				<li class="tag-2">
+					<a href="https://www.j0llyb0x.org/tag/kvm.html">
+						kvm
+						<span class="badge">3</span>
+					</a>
+				</li>
+				<li class="tag-2">
+					<a href="https://www.j0llyb0x.org/tag/mysql.html">
+						mysql
+						<span class="badge">3</span>
+					</a>
+				</li>
+				<li class="tag-2">
+					<a href="https://www.j0llyb0x.org/tag/archlinux.html">
+						archlinux
+						<span class="badge">3</span>
+					</a>
+				</li>
+				<li class="tag-1">
+					<a href="https://www.j0llyb0x.org/tag/dns.html">
+						dns
+						<span class="badge">5</span>
+					</a>
+				</li>
+				<li class="tag-1">
+					<a href="https://www.j0llyb0x.org/tag/python.html">
+						python
+						<span class="badge">5</span>
+					</a>
+				</li>
+				<li class="tag-2">
+					<a href="https://www.j0llyb0x.org/tag/bash.html">
+						bash
+						<span class="badge">3</span>
+					</a>
+				</li>
+				<li class="tag-4">
+					<a href="https://www.j0llyb0x.org/tag/bind.html">
+						bind
+						<span class="badge">2</span>
+					</a>
+				</li>
+				<li class="tag-4">
+					<a href="https://www.j0llyb0x.org/tag/libvirt.html">
+						libvirt
+						<span class="badge">2</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<nav class="sidebar-social">
+			<a class="sidebar-social-item" href="mailto:jos.ferraris@gmail.com">
+				<i class="fa fa-envelope"></i>
+			</a>
+			<a class="sidebar-social-item" href="https://github.com/j0lly" target="_blank">
+				<i class="fa fa-github"></i>
+			</a>
+			<a class="sidebar-social-item" href="https://www.linkedin.com/in/joseferraris/" target="_blank">
+				<i class="fa fa-linkedin"></i>
+			</a>
+			<a class="sidebar-social-item"
+				href="https://www.j0llyb0x.org/feeds/all.atom.xml">
+				<i class="fa fa-rss"></i>
+			</a>
+		</nav>
+		<p class="sidebar-footer">&copy; j0llyb0x.org 2011-2023</p>
+	</div>
+</div>		<div class="content container">
+<div class="post">
+	<h1 class="post-title">ambiente di sviluppo per micropython con wsl, vscode e PyMakr</h1>
+	<span class="post-date">Fri 30 June 2023</span>
+	<p>Dato che nessuno vorrebbe sviluppare i propri progetti IoT con <a href="https://micropython.org/">Micropython</a> su Windows, mi sono configurato un ambiente di sviluppo abbastanza funzionale basato su <a href="https://code.visualstudio.com/">vscode</a>, <a href="https://learn.microsoft.com/en-us/windows/wsl/">wsl</a> e l'estensione <a href="https://marketplace.visualstudio.com/items?itemName=pycom.Pymakr">pymakr</a>.</p>
+<p><img alt="esp32 dev board" src="https://www.j0llyb0x.org/images/esp32.jpg"></p>
+<p>Cominciamo coi pre-requisiti:
+- <a href="https://learn.microsoft.com/en-us/windows/wsl/install">installare wsl2</a> con ubuntu (default)
+- <a href="https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode">installare e configurare vscode</a> con remote wsl extension</p>
+<p>A questo punto potete già sviluppare quello che volete in ambiente linux con vscode da una macchina windows con innumerrevoli vantaggi tra qui una gestione umana delle versioni e paths di python, git out of the box ed altro ancora..</p>
+<p><img alt="ambiente di sviluppo linux" src="https://www.j0llyb0x.org/images/devenv.png"></p>
+<p>I prossimi passaggi saranno:</p>
+<ul>
+<li>setup WSL per lo sviluppo remoto</li>
+<li>installazione di tools specifici per sviluppo con micropyhton</li>
+<li>installare micropython su una devboard e creare il nostro primo progetto</li>
+</ul>
+<h2>setup WSL</h2>
+<p>Per configurare il WSL per un ambiente di sviluppo micropython servono 2 step:</p>
+<ul>
+<li>installare e configurare python3</li>
+<li>configurare la gestione del forwarding delle porte USB da host a guest</li>
+</ul>
+<p>nel container wsl, se stai usando la release 20.04 (default quando ho installato la distro), la versione di python è davvero vecchia; io uso sempre pyenv per gestire le versioni di python nei miei device e ambienti:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>make<span class="w"> </span>build-essential<span class="w"> </span>libssl-dev<span class="w"> </span>zlib1g-dev<span class="w"> </span>libbz2-dev<span class="w"> </span>libreadline-dev<span class="w"> </span>libsqlite3-dev<span class="w"> </span>wget<span class="w"> </span>curl<span class="w"> </span>llvm<span class="w"> </span>libncurses5-dev<span class="w"> </span>libncursesw5-dev<span class="w"> </span>xz-utils<span class="w"> </span>tk-dev<span class="w"> </span>libffi-dev<span class="w"> </span>liblzma-dev<span class="w"> </span>python-openssl<span class="w"> </span>git<span class="w"> </span>zlib1g<span class="w"> </span>zlib1g-dev<span class="w"> </span>libssl-dev<span class="w"> </span>libbz2-dev<span class="w"> </span>libsqlite3-dev
+curl<span class="w"> </span>https://pyenv.run<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PYENV_ROOT=&quot;$HOME/.pyenv&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PATH=&quot;$PYENV_ROOT/bin:$PATH&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;eval &quot;$(pyenv init -)&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<span class="nb">source</span><span class="w"> </span>~/.bashrc
+pyenv<span class="w">  </span>install<span class="w"> </span><span class="m">3</span>.11
+pyenv<span class="w"> </span>global<span class="w"> </span><span class="m">3</span>.11
+</code></pre></div>
+
+<p>Per configurare la gestione delle porte USB, per il WSL ubuntu, servono un paio di passaggi; prima di tutto, vogliamo gestire le console con <a href="https://learn.microsoft.com/it-it/windows/wsl/systemd">systemd</a> in modo da avere i permessi corretti "out of the box". Per fare ciò serve modificare il file di configurazione del wsl all'interno del container:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;[boot]\nsystemd=true\n&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w">  </span>/etc/wsl.conf
+</code></pre></div>
+
+<p>e riavviare il WSL con </p>
+<div class="highlight"><pre><span></span><code><span class="n">wsl</span><span class="p">.</span><span class="n">exe</span> <span class="p">-</span><span class="n">-shutdown</span>
+</code></pre></div>
+
+<p>successivamente serve abilitare il <a href="https://learn.microsoft.com/it-it/windows/wsl/connect-usb">forwarding</a> dei dispositivi USB al WSL:</p>
+<div class="highlight"><pre><span></span><code><span class="n">winget</span> <span class="n">install</span> <span class="p">-</span><span class="n">-interactive</span> <span class="p">-</span><span class="o">-exact</span> <span class="n">dorssel</span><span class="p">.</span><span class="n">usbipd-win</span>
+</code></pre></div>
+
+<p>Mentre nel container:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>linux-tools-generic<span class="w"> </span>hwdata
+sudo<span class="w"> </span>update-alternatives<span class="w"> </span>--install<span class="w"> </span>/usr/local/bin/usbip<span class="w"> </span>usbip<span class="w"> </span>/usr/lib/linux-tools/*-generic/usbip<span class="w"> </span><span class="m">20</span>
+</code></pre></div>
+
+<h2>installare i tools necessari</h2>
+<p>Ora installiamo alcuni tools per gestione e sviluppo con micropython:</p>
+<ul>
+<li><a href="https://github.com/espressif/esptool">esptool</a></li>
+<li><a href="https://marketplacevisualstudio.com/items?itemName=pycom.Pymakr">pymakr</a></li>
+<li><a href="https://github.com/BradenM/micropy-cli">micropy-cli</a></li>
+</ul>
+<p>esptool serve per flashare micropython sul microcontroller mentre micropy-cli è un utilissimo tool per aggiungere ai progetti l'auto-completion e poter fare linting con micropython oltre che per fare scaffolding di nuovi progetti micropython.
+Per entrambi i tool basta utilizzare pip:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>esptool<span class="w"> </span>micropy-cli
+</code></pre></div>
+
+<p>micropy-cli per funzionare con vscode ha bisogno di un po di setup; serve installare <a href="https://marketplace.visualstudio.com/items?itemName=VisualStudioExptTeam.vscodeintellicode">intellisense</a> nel wsl ed in oltre servono gli "stubs" per l'autocompletion:</p>
+<div class="highlight"><pre><span></span><code>micropy<span class="w"> </span>stubs<span class="w"> </span>install<span class="w"> </span>micropython-esp32-stubs
+</code></pre></div>
+
+<p>se volete vedere che versione di micropython viene usata nello stub potete usare la funzione search per avere più info:</p>
+<div class="highlight"><pre><span></span><code>micropy<span class="w"> </span>stubs<span class="w"> </span>search<span class="w"> </span>esp32
+</code></pre></div>
+
+<p>per pymakr, basta installare (nell'stanza remota di vscode) <a href="https://marketplace.visualstudio.com/items?itemName=pycom.pymakr-preview">l'estensione</a>.Ad oggi serve installare le verisone preview perchè c'è qualche problema di compatibilità con vscode. L'estensione è stata fatta per la pyboard ma può essere usata con qualsiasi board su cui giri micropython</p>
+<p>per concludere ecco una lista di estensioni che utilizzo sepre per sviluppare (anche in Cpython):</p>
+<ul>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">python</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance">pylance</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.pylint">pylint</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter">black</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=donjayamanne.python-environment-manager">python virtualenv manager</a></li>
+</ul>
+<h2>setup progetto</h2>
+<p>siamo ormai pronti per il nostro prossimo progetto embedded ma prima di tutto, serve avere due cose:
+una devboard e micropython!</p>
+<p>Io, ho parecchie devboard esp32 comprate negli anni su aliexpress come questa:</p>
+<p><img alt="lolin lite 32" src="https://www.j0llyb0x.org/images/lolinlite32.png"></p>
+<p>per micropython, scaricate la versione direttamente dal <a href="https://micropython.org/download/">sito</a>, specifica per la vostra board nel container:</p>
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://micropython.org/resources/firmware/esp32-20230426-v1.20.0.bin
+</code></pre></div>
+
+<p>a questo punto, con la board collegate la board al computer; usate un cavo con il canale dati altrimenti perderete 1 ora come me a cercare di capire cosa non vada... In generale, se sentite il "dling-dlong" di windows quando attaccate la board siete a cavallo.</p>
+<p>Ora, date il controllo del bus USB al container (serve farlo ogni volta che connettete il cavo al pc) con una shell <strong>da amministratore</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">usbipd</span> <span class="n">wsl</span> <span class="n">list</span>
+<span class="n">usbipd</span> <span class="n">wsl</span> <span class="n">attach</span> <span class="p">-</span><span class="n">-busid</span> <span class="p">&lt;</span><span class="n">busid</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<p>a titolo di esempio, potete vedere quando la board non è connessa e quando lo è, e nella seconda schermata quando la porta USB è gestita dal container WSL.</p>
+<p><img alt="usb list" src="https://www.j0llyb0x.org/images/usbipd.png"></p>
+<p><img alt="usb attached" src="https://www.j0llyb0x.org/images/usbipd-2.png"></p>
+<p>mentre nel container dovreste poter listare il nuovo device:</p>
+<div class="highlight"><pre><span></span><code>lsusb
+</code></pre></div>
+
+<p><img alt="lsusb" src="https://www.j0llyb0x.org/images/lsusb.png"></p>
+<p>ora siamo pronti a flashare l'immagine nel microcontroller (path, parametri e porte dipendono dal vostro controller etc):</p>
+<div class="highlight"><pre><span></span><code>esptool.py<span class="w"> </span>--chip<span class="w"> </span>esp32<span class="w"> </span>--port<span class="w"> </span>/dev/ttyUSB0<span class="w"> </span>erase_flash
+esptool.py<span class="w"> </span>--chip<span class="w"> </span>esp32<span class="w"> </span>--port<span class="w"> </span>/dev/ttyUSB0<span class="w"> </span>--baud<span class="w"> </span><span class="m">460800</span><span class="w"> </span>write_flash<span class="w"> </span>-z<span class="w"> </span>0x1000<span class="w"> </span>esp32-20230426-v1.20.0.bin
+</code></pre></div>
+
+<p><img alt="esptool erase" src="https://www.j0llyb0x.org/images/esp_erase.png"></p>
+<p><img alt="esptool flash" src="https://www.j0llyb0x.org/images/esp_flash.png"></p>
+<p>Se tutto è andato a buon fine, abbiamo una board pronta per essere programmata in micropython, collegata al nostro WSL!</p>
+<p>Ora non resta che create un progetto e conminciare a scrivere codice.</p>
+<p>Prima di tutto, creiamo un progetto con micropy-cli e configuriamo la connessione con pymakr:</p>
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>newproject<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>newproject
+micropy<span class="w"> </span>init<span class="w"> </span>-n<span class="w"> </span>newproject<span class="w"> </span>-t<span class="w"> </span>vscode<span class="w"> </span>-t<span class="w"> </span>pymakr<span class="w"> </span>-t<span class="w"> </span>pylint<span class="w"> </span>-t<span class="w"> </span>gitignore<span class="w"> </span>-t<span class="w"> </span>bootstrap<span class="w"> </span>-s<span class="w">  </span>micropython-stdlib-stubs<span class="w"> </span>-s<span class="w"> </span>micropython-esp32-stubs
+code<span class="w"> </span>.
+</code></pre></div>
+
+<p>Io ho direttamente specificato gli stubs che ho installato ma lanciando la cli in maniera interattiva potete selezionare config e stubs in base alla vostra installazione</p>
+<div class="highlight"><pre><span></span><code>micropy<span class="w"> </span>init
+</code></pre></div>
+
+<p>quando vscode si aprirà, avrete un workspace già configurato e pronto per configurare la connessione al microcontroller.</p>
+<p><img alt="vscode pymakr" src="https://www.j0llyb0x.org/images/vscode_pymakr.png"></p>
+<p>nel tab in basso avrete la vostra board nei devices associati al progetto; ora potete connettervi e verificare che tutto funzioni aprendo una shell interattiva nel device</p>
+<p><img alt="vscode pymakr connect" src="https://www.j0llyb0x.org/images/vscode_pymakr-1.png"></p>
+<p>ed ora, proviamo a scrivere del "upython" code con l'aiuto del linter e code hints</p>
+<p><img alt="vscode pymakr code hints" src="https://www.j0llyb0x.org/images/vscode_pymakr-2.png"></p>
+<p>That's it! possiamo divertirci con micropython e i nostri piccoli device in un ambiente davvero comodo per lo sviluppo e il test delle nostre applicazioni IoT!</p>
+
+		<span class="post-tags">
+			Tags:
+			<ul>
+					<li><a href="https://www.j0llyb0x.org/tag/micropython.html">micropython</a></li>
+					<li><a href="https://www.j0llyb0x.org/tag/esp32.html">esp32</a></li>
+					<li><a href="https://www.j0llyb0x.org/tag/vscode.html">vscode</a></li>
+					<li><a href="https://www.j0llyb0x.org/tag/python.html">python</a></li>
+					<li><a href="https://www.j0llyb0x.org/tag/development.html">development</a></li>
+					<li><a href="https://www.j0llyb0x.org/tag/wsl.html">wsl</a></li>
+					<li><a href="https://www.j0llyb0x.org/tag/ubuntu.html">ubuntu</a></li>
+					<li><a href="https://www.j0llyb0x.org/tag/pymakr.html">pymakr</a></li>
+			</ul>
+		</span>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+	var disqus_shortname = 'j0llyshares';
+	(function() {
+		var d = document, s = d.createElement('script'); s.type = 'text/javascript'; s.async = true;
+		s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+		</div>
+	</body>
+</html>
